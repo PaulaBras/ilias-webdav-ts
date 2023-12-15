@@ -6,7 +6,8 @@ function Dashboard() {
 
     const getCourses = async () => {
         const url = 'your-url-here';
-        const result = await window.api.ipcRenderer.invoke('getCourses', url);
+
+        const result = await window.api.mainPageController.getData();
         setCourses(result);
     };
 
