@@ -3,10 +3,10 @@ import { Button, Table } from 'react-bootstrap';
 
 function Dashboard() {
     const [courses, setCourses] = useState([]);
-
+    const settings = window.api.settings.getAppSettings();
+    
     const getCourses = async () => {
         const url = 'your-url-here';
-
         const result = await window.api.mainPageController.getData();
         setCourses(result);
     };
