@@ -1,3 +1,4 @@
+import { get } from 'http';
 import { useState, useEffect } from 'react';
 import { Button, Table } from 'react-bootstrap';
 
@@ -5,19 +6,19 @@ function Dashboard() {
     const [courses, setCourses] = useState([]);
     const settings = window.api.settings.getAppSettings();
     
-    const getCourses = async () => {
-        const url = 'your-url-here';
-        const result = await window.api.mainPageController.getData();
-        setCourses(result);
-    };
+    function getCouses() {
+        window.api.mainPage.getData().then((data) => {
+            setCourses(data);
+        });
+    }
 
     useEffect(() => {
-        getCourses();
+        getCouses();
     }, []);
 
     return (
         <div className='p-3'>
-            <Button onClick={getCourses}>Get Courses</Button>
+            <Button variant="primary" onClick={getCouses}>Get Courses</Button>
             <Table striped bordered hover>
                 <thead>
                     <tr>

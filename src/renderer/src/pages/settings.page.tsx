@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button, Col, Form, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BiSave } from 'react-icons/bi';
+// import { dialog } from '@electron/remote';
 
 function SettingsPage() {
     const [settings, setSettings] = useState({
@@ -13,7 +14,7 @@ function SettingsPage() {
 
     useEffect(() => {
         window.api.settings.getAppSettings().then((appSettings) => {
-            setSettings(appSettings);
+            setSettings(appSettings || {});
         });
     }, []);
 
@@ -24,9 +25,20 @@ function SettingsPage() {
         });
     };
 
+    // const handleDirectorySelect = async () => {
+    //     const result = await dialog.showOpenDialog({
+    //         properties: ['openDirectory']
+    //     });
+
+    //     if (!result.canceled && result.filePaths.length > 0) {
+    //         const directoryPath = result.filePaths[0];
+    //         // Now you can use directoryPath
+    //     }
+    // };
+
     const handleSubmit = (e) => {
         if (e.target.name === 'url') {
-            const urlPattern = /^(ftp|http|https):\/\/[^ "]+$/;
+            const urlPattern = /^(http|https):\/\/[^ "]+$/;
             if (!urlPattern.test(e.target.value)) {
                 alert('Please enter a valid URL.');
                 return;
@@ -68,7 +80,16 @@ function SettingsPage() {
 
                 <Form.Group controlId="rootFolder">
                     <Form.Label>Root Folder</Form.Label>
-                    <Form.Control type="file" webkitdirectory="" directory="" name="rootFolder" onChange={handleChange} />
+
+                    {/* <Button type="button" onClick={handleDirectorySelect}>
+                        Select Directory
+                    </Button> */}
+                    <Form.Control as="input" type="file" webkitdirectory="" directory="true" name="rootFolder" onChange={handleChange} />
+
+                    {/* <Button type="button" onClick={handleButtonClick}>
+                        Select Directory
+                    </Button>
+                    <Form.Control type="text" value={folderPath} readOnly /> */}
                 </Form.Group>
             </Form>
         </div>

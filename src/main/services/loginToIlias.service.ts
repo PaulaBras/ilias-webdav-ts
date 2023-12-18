@@ -30,3 +30,4 @@ async function login(todo, url, username, password, rootFolder) {
     // }
 }
 
+export { login };

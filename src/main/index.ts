@@ -3,7 +3,7 @@ import { join } from 'path';
 import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import icon from '../../resources/icon.png?asset';
 import settingsIpclistener from './controller/settings/settings.ipclistener';
-import mainPageIpclistener from './controller/settings/mainPage.controller';
+import mainPageIpclistener from './controller/mainpage/mainPage.ipclistener';
 
 function createWindow(): void {
     // Create the browser window.
@@ -38,7 +38,7 @@ function createWindow(): void {
 }
 
 settingsIpclistener.setupIpcListener();
-mainPageIpclistener.getMainPageController();
+mainPageIpclistener.setupIpcListener();
 
 
 // This method will be called when Electron has finished

@@ -8,8 +8,9 @@ function getCourses(): string {
     return store.get('appCourses', {}) as string;
 }
 
-async function login() {
+async function getData() {
     const { url, username, password } = getAppSettings();
+    console.log(url, username, password);
 
     // Get Ilias client id
     const res = await axios.get(url);
@@ -29,8 +30,5 @@ async function login() {
     });
 }
 
-function getData(): string {
-    return store.get('appData', {}) as string;
-}
 
-export { getCourses, login, getData };
+export { getCourses, getData };

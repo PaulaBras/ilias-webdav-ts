@@ -1,5 +1,5 @@
 import { ipcMain } from "electron";
-import { getCourses } from "../../services/getCourses.service";
+import { getCourses, getData } from "../../services/getCourses.service";
 
 function setupIpcListener() {
     ipcMain.handle('mainpage:getCourses', () => {
@@ -7,7 +7,7 @@ function setupIpcListener() {
     });
 
     ipcMain.handle('mainpage:getData', () => {
-        return getCourses();
+        return getData();
     });
 }
 
