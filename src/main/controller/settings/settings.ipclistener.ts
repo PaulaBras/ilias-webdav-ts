@@ -7,7 +7,7 @@ function setupIpcListener() {
         return getAppSettings();
     });
 
-    ipcMain.handle('settings:setAppSettings', (event, settings: AppSettings) => {
+    ipcMain.handle('settings:setAppSettings', (_event, settings: AppSettings) => {
         return setAppSettings(settings);
     });
 }

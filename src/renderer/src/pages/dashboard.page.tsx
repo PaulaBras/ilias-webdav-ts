@@ -1,15 +1,14 @@
-import { get } from 'http';
 import { useState, useEffect } from 'react';
 import { Button, Table } from 'react-bootstrap';
 
 function Dashboard() {
     const [courses, setCourses] = useState([]);
-    const settings = window.api.settings.getAppSettings();
+    // const settings = window.api.settings.getAppSettings();
     
     function getCouses() {
-        window.api.mainPage.getData().then((data) => {
-            setCourses(data);
-        });
+        // window.api.mainPage.getData().then((data) => {
+        //     setCourses(data);
+        // });
     }
 
     useEffect(() => {
