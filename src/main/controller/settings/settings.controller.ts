@@ -7,6 +7,9 @@ function getController() {
         },
         setAppSettings: (settings) => {
             return ipcRenderer.invoke('settings:setAppSettings', settings);
+        },
+        openDialog: () => {
+            return ipcRenderer.invoke('settings:openDialog');
         }
     }
 }

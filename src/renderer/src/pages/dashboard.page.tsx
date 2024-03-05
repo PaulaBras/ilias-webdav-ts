@@ -3,12 +3,12 @@ import { Button, Table } from 'react-bootstrap';
 
 function Dashboard() {
     const [courses, setCourses] = useState([]);
-    // const settings = window.api.settings.getAppSettings();
     
     function getCouses() {
-        // window.api.mainPage.login(url, username, password).then((data) => {
-        //     setCourses(data);
-        // });
+        window.api.mainPage.login().then((data) => {
+            // setCourses(data);
+            console.log(data);
+        });
     }
 
     useEffect(() => {

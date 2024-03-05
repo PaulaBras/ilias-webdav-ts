@@ -1,35 +1,22 @@
 import axios from 'axios';
-import * as querystring from 'querystring';
+import { getAppSettings } from './config.service';
 
-async function login(url, username, password) {
-    // Get Ilias client id
-    const response = await axios.get(url);
-    const finalUrl = response.request.res.responseUrl;
-    const webdavId = finalUrl.match(/client_id=([^&]*)/)?.[1];
+async function login(): Promise<string> {
+    const { url, username, password, webdavId } = getAppSettings();
 
     // Login to Ilias
-    await axios.post(url + `/ilias.php?lang=de&client_id=${webdavId}&cmd=post&cmdClass=ilstartupgui&baseClass=ilStartUpGUI&rtoken=`, 
-    querystring.stringify({ 
-        username: username, 
-        password: password, 
-        "cmd[doStandardAuthentication]": 'Anmelden' 
-    }), 
-    {
-        headers: { 
-            'Content-Type': 'application/x-www-form-urlencoded' 
+    await axios.post(url + `/ilias.php?lang=de&client_id=${webdavId}&cmd=post&cmdClass=ilstartupgui&baseClass=ilStartUpGUI&rtoken=`, {
+        username: username,
+        password: password,
+        "cmd[doStandardAuthentication]": 'Anmelden'
+    }, {
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
         }
-    }
-    );
+    });
 
-    console.log(webdavId)
-
-    // if (todo == 'sync') {
-    //     syncFiles(webdavId, rootFolder, url, username, password).then(() => {
-    //         startDisplay(rootFolder);
-    //     });
-    // } else if (todo == 'download') {
-    //     getAllFiles(rootFolder, url, username, password, webdavId);
-    // }
+    return "changeme"
 }
+
 
 export { login };

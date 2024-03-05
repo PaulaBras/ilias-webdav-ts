@@ -3,4 +3,5 @@ export interface AppSettings {
     username: string;
     password: string;
     rootFolder: string;
+    webdavId: string | null;
 }
