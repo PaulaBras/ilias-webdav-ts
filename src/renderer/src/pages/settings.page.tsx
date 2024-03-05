@@ -55,7 +55,7 @@ function SettingsPage() {
             </Form>
             <Form onSubmit={handleSubmit}>
                 <Form.Group controlId="url">
-                    <Form.Label>URL</Form.Label>
+                    <Form.Label>Ilias URL</Form.Label>
                     <Form.Control type="url" name="url" value={settings.url} onChange={handleChange} required />
                 </Form.Group>
 

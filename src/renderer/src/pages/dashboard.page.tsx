@@ -6,7 +6,7 @@ function Dashboard() {
     // const settings = window.api.settings.getAppSettings();
     
     function getCouses() {
-        // window.api.mainPage.getData().then((data) => {
+        // window.api.mainPage.login(url, username, password).then((data) => {
         //     setCourses(data);
         // });
     }

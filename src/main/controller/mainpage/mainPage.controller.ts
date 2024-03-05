@@ -1,4 +1,5 @@
 import { ipcRenderer } from 'electron';
+import { login } from '../../services/loginToIlias.service';
 
 function getMainPageController() {
     return {
@@ -7,6 +8,9 @@ function getMainPageController() {
         },
         getLayout: () => {
             return ipcRenderer.invoke('mainpage:getLayout');
+        },
+        login: (url, username, password) => {
+            return ipcRenderer.invoke('mainpage:login');
         }
     }
 }

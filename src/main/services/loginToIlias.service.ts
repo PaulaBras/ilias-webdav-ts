@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as querystring from 'querystring';
 
-async function login(todo, url, username, password, rootFolder) {
+async function login(url, username, password) {
     // Get Ilias client id
     const response = await axios.get(url);
     const finalUrl = response.request.res.responseUrl;
@@ -20,6 +20,8 @@ async function login(todo, url, username, password, rootFolder) {
         }
     }
     );
+
+    console.log(webdavId)
 
     // if (todo == 'sync') {
     //     syncFiles(webdavId, rootFolder, url, username, password).then(() => {
