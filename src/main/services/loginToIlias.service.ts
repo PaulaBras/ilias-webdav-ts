@@ -35,7 +35,6 @@ async function login(): Promise<string> {
     }
 
     // Get courses
-
     // let courses = await axios.get(url + '/ilias.php?baseClass=ilDashboardGUI&cmd=jumpToSelectedItems');
     // console.log(courses.data, courses.status);
 
