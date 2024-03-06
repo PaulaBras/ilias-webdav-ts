@@ -10,22 +10,14 @@ function getAppSettings(): AppSettings {
 
 function setAppSettings(settings: AppSettings): void {
     getWebDavID(settings).then(webdavId => {
-        console.log(settings, webdavId);
         settings.webdavId = webdavId;
         store.set('appSettings', settings);
     });
 }
 
 async function getWebDavID(settings: AppSettings): Promise<string> {
-    const { url } = settings;
-
     // Get Ilias client id
-    const res = await axios.get(url);
-    const regex = /client_id=([^&]*)/;
-    const match = res.request.res.responseUrl.match(regex);
-    const webdavId = match && match[1];
-
-    return webdavId;
+    return (await axios.get(settings.url)).request.res.responseUrl.match(/client_id=([^&]*)/)?.[1];
 }
 
 export { getAppSettings, setAppSettings };

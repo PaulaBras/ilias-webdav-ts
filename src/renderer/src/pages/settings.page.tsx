@@ -19,7 +19,8 @@ function SettingsPage() {
 
     const openDialog = (e) => {
         window.api.settings.openDialog().then((filePaths) => {
-            setSettings(prevSettings => ({
+            console.log(filePaths[0]);
+            setSettings((prevSettings) => ({
                 ...prevSettings,
                 rootFolder: filePaths[0]
             }));
@@ -34,13 +35,12 @@ function SettingsPage() {
     };
 
     function handleSubmit(e: React.FormEvent) {
-        console.log(settings.url, settings.username, settings.password, settings.rootFolder)
 
-        // const urlPattern = /^(http|https):\/\/[^ "]+$/;
-        // if (!urlPattern.test(settings.url)) {
-        //     alert('Please enter a valid URL.');
-        //     // return;
-        // }
+        const urlPattern = /^(http|https):\/\/[^ "]+$/;
+        if (!urlPattern.test(settings.url)) {
+            alert('Please enter a valid URL.');
+            // return;
+        }
 
         window.api.settings.setAppSettings(settings);
         e.preventDefault();
@@ -48,7 +48,7 @@ function SettingsPage() {
 
     return (
         <div className="p-3">
-            <Form>
+            <Form onSubmit={handleSubmit}>
                 <Row>
                     <Col>
                         <h3>Settings</h3>
@@ -59,8 +59,6 @@ function SettingsPage() {
                         </Button>
                     </Col>
                 </Row>
-            </Form>
-            <Form onSubmit={handleSubmit}>
                 <Row>
                     <Col>
                         <Form.Group controlId="url">
@@ -89,7 +87,7 @@ function SettingsPage() {
                             </Row>
                             <Row>
                                 <Col>
-                                    <Form.Control type="text" name="rootFolder" readOnly value={settings.rootFolder} onChange={handleChange} />
+                                    <Form.Control type="text" name="rootFolder" readOnly value={settings.rootFolder} onChange={handleChange} required />
                                 </Col>
                             </Row>
                         </Form.Group>

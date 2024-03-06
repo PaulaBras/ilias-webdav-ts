@@ -4,7 +4,7 @@ function AboutPage() {
             <h3>About</h3>
             <a>Ilias Webdav Scraper<br />
             keks<br />
-            Make with ❤ by PaBr</a>
+            Made with ❤ by PaBr</a>
         </div>
     );
 }
