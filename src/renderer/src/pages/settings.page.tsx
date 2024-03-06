@@ -8,8 +8,7 @@ function SettingsPage() {
         url: '',
         username: '',
         password: '',
-        rootFolder: '',
-        webdavId: '',
+        rootFolder: ''
     });
 
     useEffect(() => {
@@ -20,9 +19,10 @@ function SettingsPage() {
 
     const openDialog = (e) => {
         window.api.settings.openDialog().then((filePaths) => {
-            console.log(filePaths);
-            settings.rootFolder = filePaths[0];
-            handleChange(e);
+            setSettings(prevSettings => ({
+                ...prevSettings,
+                rootFolder: filePaths[0]
+            }));
         });
     };
 
@@ -33,14 +33,15 @@ function SettingsPage() {
         });
     };
 
-    function handleSubmit(e) {
-        if (e.target.name === 'url') {
-            const urlPattern = /^(http|https):\/\/[^ "]+$/;
-            if (!urlPattern.test(e.target.value)) {
-                alert('Please enter a valid URL.');
-                // return;
-            }
-        }
+    function handleSubmit(e: React.FormEvent) {
+        console.log(settings.url, settings.username, settings.password, settings.rootFolder)
+
+        // const urlPattern = /^(http|https):\/\/[^ "]+$/;
+        // if (!urlPattern.test(settings.url)) {
+        //     alert('Please enter a valid URL.');
+        //     // return;
+        // }
+
         window.api.settings.setAppSettings(settings);
         e.preventDefault();
     }
@@ -50,7 +51,7 @@ function SettingsPage() {
             <Form>
                 <Row>
                     <Col>
-                        <h2>Settings</h2>
+                        <h3>Settings</h3>
                     </Col>
                     <Col className="d-flex justify-content-end">
                         <Button variant="primary" type="submit">
@@ -88,7 +89,7 @@ function SettingsPage() {
                             </Row>
                             <Row>
                                 <Col>
-                                    <Form.Control type="text" name="rootFolder" readOnly value={settings.rootFolder} onChange={handleChange} required />
+                                    <Form.Control type="text" name="rootFolder" readOnly value={settings.rootFolder} onChange={handleChange} />
                                 </Col>
                             </Row>
                         </Form.Group>

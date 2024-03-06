@@ -5,12 +5,12 @@ import axios from 'axios';
 const store = new Store();
 
 function getAppSettings(): AppSettings {
-    // console.log(store.get('appSettings', {}));
     return store.get('appSettings', {}) as AppSettings;
 }
 
 function setAppSettings(settings: AppSettings): void {
     getWebDavID(settings).then(webdavId => {
+        console.log(settings, webdavId);
         settings.webdavId = webdavId;
         store.set('appSettings', settings);
     });
