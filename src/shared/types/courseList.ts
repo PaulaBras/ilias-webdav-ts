@@ -1,7 +1,5 @@
 export interface CourseList {
-    Array: {
-        name: string;
-        refId: string;
-        download: boolean;
-    }[];
+    name: string;
+    refId: string;
+    download: boolean;
 }

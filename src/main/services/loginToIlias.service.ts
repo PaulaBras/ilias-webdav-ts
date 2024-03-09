@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { getAppSettings } from './config.service';
 import { setCoursesList } from './courses.service';
+import { CourseList } from '../../shared/types/courseList';
 
 async function login(): Promise<string> {
     const { url, username, password, webdavId } = getAppSettings();
-    let coursesArray: { name: string, refId: string, download: boolean }[] = [];
+    let coursesArray: CourseList[] = [];
     let setCookieHeader;
     let phpSessId;
 
@@ -20,7 +21,8 @@ async function login(): Promise<string> {
 
     // Login
     try {
-        await axios.post(url + `/ilias.php?lang=de&client_id=${webdavId}&cmd=post&cmdClass=ilstartupgui&cmdNode=10l&baseClass=ilStartUpGUI&rtoken=`, loginData, {
+        await axios.post(url + `/ilias.php?lang=de&client_id=${webdavId}&cmd=post&cmdClass=ilstartupgui&cmdNode=10l&baseClass=ilStartUpGUI&rtoken=`, 
+        loginData, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
@@ -39,13 +41,11 @@ async function login(): Promise<string> {
                 ?.split('=')[1]
                 .split(';')[0];
             if (!phpSessId) return 'Invalid login data';
-            // The server is redirecting to a different page
-            const redirectUrl = error.response.headers.location;
 
             // Make a new request to the redirect URL
-            await axios.get(redirectUrl, {
+            await axios.get(error.response.headers.location, {
                 headers: {
-                    Cookie: 'PHPSESSID=' + phpSessId + `; ilClientId=${webdavId}`
+                    Cookie: `PHPSESSID=${phpSessId}; ilClientId=${webdavId}`
                 },
                 withCredentials: true
             });
@@ -58,7 +58,7 @@ async function login(): Promise<string> {
     // Get courses
     let courses = await axios.get(url + '/ilias.php?cmdClass=ilmembershipoverviewgui&cmdNode=jb&baseClass=ilmembershipoverviewgui', {
         headers: {
-            Cookie: 'PHPSESSID=' + phpSessId + `; ilClientId=${webdavId}`
+            Cookie: `PHPSESSID=${phpSessId}; ilClientId=${webdavId}`
         },
         withCredentials: true
     });
@@ -76,9 +76,8 @@ async function login(): Promise<string> {
         }
     });
 
-    // coursesArray; --> to storage
     console.log(coursesArray); // debug
-    setCoursesList({ Array: coursesArray });
+    setCoursesList(coursesArray);
 
     return 'Success';
 }

@@ -10,6 +10,9 @@ function getMainPageController() {
         },
         login: () => {
             return ipcRenderer.invoke('mainpage:login');
+        },
+        checkFolderContents: (folderPath) => {
+            return ipcRenderer.invoke('mainpage:checkFolderContents', folderPath);
         }
     }
 }
