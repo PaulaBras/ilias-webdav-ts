@@ -2,8 +2,11 @@ import { ipcRenderer } from 'electron';
 
 function getMainPageController() {
     return {
-        getLayout: () => {
-            return ipcRenderer.invoke('mainpage:getLayout');
+        getCourses: () => {
+            return ipcRenderer.invoke('mainpage:getCourses');
+        },
+        setCourses: (courses) => {
+            return ipcRenderer.invoke('mainpage:setCourses', courses);
         },
         login: () => {
             return ipcRenderer.invoke('mainpage:login');
