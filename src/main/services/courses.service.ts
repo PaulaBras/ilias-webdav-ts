@@ -11,4 +11,13 @@ function setCoursesList(courseList: CourseList[]): void {
     store.set('courseList', courseList);
 }
 
-export { getCoursesList, setCoursesList };
+function setDownloadOption(refId: string, downloadBool: boolean): boolean {
+    const courseList = getCoursesList();
+    const courseIndex = courseList.findIndex((course) => course.refId === refId);
+    if(courseIndex === -1) return false;
+    courseList[courseIndex].download = downloadBool;
+    store.set('courseList', courseList);
+    return true;
+}
+
+export { getCoursesList, setCoursesList, setDownloadOption };

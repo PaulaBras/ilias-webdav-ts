@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { getAppSettings } from './config.service';
-import { setCoursesList } from './courses.service';
+import { getCoursesList, setCoursesList } from './courses.service';
 import { CourseList } from '../../shared/types/courseList';
 
 async function login(): Promise<string> {
@@ -21,8 +21,7 @@ async function login(): Promise<string> {
 
     // Login
     try {
-        await axios.post(url + `/ilias.php?lang=de&client_id=${webdavId}&cmd=post&cmdClass=ilstartupgui&cmdNode=10l&baseClass=ilStartUpGUI&rtoken=`, 
-        loginData, {
+        await axios.post(url + `/ilias.php?lang=de&client_id=${webdavId}&cmd=post&cmdClass=ilstartupgui&cmdNode=10l&baseClass=ilStartUpGUI&rtoken=`, loginData, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
@@ -30,7 +29,6 @@ async function login(): Promise<string> {
             maxRedirects: 0
         });
     } catch (error: any) {
-
         // Catch 302 error and get the new cookie
         if (error.response && error.response.status === 302) {
             setCookieHeader = error.response.headers['set-cookie'];
@@ -72,11 +70,31 @@ async function login(): Promise<string> {
         let refIdMatch = line.match(/ref_id=([0-9]+)/);
 
         if (nameMatch && refIdMatch) {
-            coursesArray.push({ name: nameMatch[1], refId: refIdMatch[1], download: true});
+            coursesArray.push({ name: nameMatch[1], refId: refIdMatch[1], download: true });
         }
     });
 
-    console.log(coursesArray); // debug
+    // Get existing courses list
+    const existingCoursesList = getCoursesList();
+
+    if (existingCoursesList) {
+        // Create a map for quick lookup
+        const existingCoursesMap = new Map(existingCoursesList.map((course) => [course.refId, course]));
+        // Update courses array
+        coursesArray = coursesArray.map((course) => {
+            const existingCourse = existingCoursesMap.get(course.refId);
+            if (existingCourse !== undefined) {
+                // If course already exists, use the existing entry
+                console.log('Course already exists:', existingCourse.name); // debug
+                return existingCourse;
+            } else {
+                // Otherwise, use the new entry
+                console.log('New course:', course); // debug
+                return course;
+            }
+        });
+    }
+
     setCoursesList(coursesArray);
 
     return 'Success';

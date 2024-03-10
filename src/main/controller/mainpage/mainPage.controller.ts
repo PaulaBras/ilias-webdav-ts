@@ -13,6 +13,12 @@ function getMainPageController() {
         },
         checkFolderContents: (folderPath) => {
             return ipcRenderer.invoke('mainpage:checkFolderContents', folderPath);
+        },
+        downloadOption: (refId, downloadBool) => {
+            return ipcRenderer.invoke('mainpage:downloadOption', refId, downloadBool);
+        },
+        startDownload: (courses) => {
+            return ipcRenderer.invoke('mainpage:startDownload', courses);
         }
     }
 }

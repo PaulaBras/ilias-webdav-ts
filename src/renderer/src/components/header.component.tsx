@@ -1,6 +1,8 @@
 import { Navbar, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import { IoMdSettings } from 'react-icons/io';
+import { MdSpaceDashboard } from 'react-icons/md';
 
 function Header() {
     return (
@@ -9,10 +11,10 @@ function Header() {
             <Navbar bg="dark" variant="dark" className="mb-5">
                 <Container>
                     <Navbar.Brand as={Link} to="/">
-                        Home
+                        <MdSpaceDashboard /> Home
                     </Navbar.Brand>
                     <Navbar.Brand as={Link} to="/settings">
-                        Settings
+                        <IoMdSettings /> Settings
                     </Navbar.Brand>
                     <Navbar.Brand as={Link} to="/about">
                         About
