@@ -1,7 +1,8 @@
 import { CourseList } from 'src/shared/types/courseList';
+import { DownloadSize } from 'src/shared/types/downloadSize';
 
 function handleCheckboxChange(refId: string, checked: boolean, setCourses: React.Dispatch<React.SetStateAction<CourseList[]>>) {
-    window.api.mainPage.downloadOption(refId, checked).then((data) => {
+    window.api.mainPage.downloadOption(refId, checked).then(() => {
         // Update the courses state
         setCourses((courses) =>
             courses.map((course) => {
@@ -17,11 +18,14 @@ function handleCheckboxChange(refId: string, checked: boolean, setCourses: React
     });
 }
 
-function getCoursesList(setCourses: React.Dispatch<React.SetStateAction<CourseList[]>>, setDownloadText: React.Dispatch<React.SetStateAction<string>>) {
+function getCoursesList(setCourses: React.Dispatch<React.SetStateAction<CourseList[]>>, setDownloadText: React.Dispatch<React.SetStateAction<string>>, setDownloadSize: React.Dispatch<React.SetStateAction<DownloadSize[]>>): void {
     window.api.mainPage.login().then((data) => {
         if (data === 'Success') {
             window.api.mainPage.getCourses().then((data) => {
                 setCourses(data);
+                window.api.mainPage.downloadSize(data).then((data) => {
+                    setDownloadSize(data);
+                });
             });
             window.api.settings.getAppSettings().then((appSettings) => {
                 window.api.mainPage.checkFolderContents(appSettings.rootFolder).then((data) => {
@@ -38,7 +42,7 @@ function getCoursesList(setCourses: React.Dispatch<React.SetStateAction<CourseLi
 
 function downloadCourses(courses: CourseList[]) {
     window.api.mainPage.startDownload(courses).then((data) => {
-        console.log(data);
+        // console.log(data);
     });
 }
 

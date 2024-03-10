@@ -4,12 +4,15 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import icon from '../../resources/icon.png?asset';
 import settingsIpclistener from './controller/settings/settings.ipclistener';
 import mainPageIpclistener from './controller/mainpage/mainPage.ipclistener';
+import 'source-map-support/register'
+
+export let appWindow: BrowserWindow | undefined = undefined;
 
 function createWindow(): void {
     // Create the browser window.
-    const mainWindow = new BrowserWindow({
+    appWindow = new BrowserWindow({
         width: 900,
-        height: 670,
+        height: 800,
         show: false,
         autoHideMenuBar: true,
         ...(process.platform === 'linux' ? { icon } : {}),
@@ -19,11 +22,11 @@ function createWindow(): void {
         }
     });
 
-    mainWindow.on('ready-to-show', () => {
-        mainWindow.show();
+    appWindow.on('ready-to-show', () => {
+        appWindow?.show();
     });
 
-    mainWindow.webContents.setWindowOpenHandler((details) => {
+    appWindow.webContents.setWindowOpenHandler((details) => {
         shell.openExternal(details.url);
         return { action: 'deny' };
     });
@@ -31,9 +34,9 @@ function createWindow(): void {
     // HMR for renderer base on electron-vite cli.
     // Load the remote URL for development or the local html file for production.
     if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-        mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);
+        appWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);
     } else {
-        mainWindow.loadFile(join(__dirname, '../renderer/index.html'));
+        appWindow.loadFile(join(__dirname, '../renderer/index.html'));
     }
 }
 

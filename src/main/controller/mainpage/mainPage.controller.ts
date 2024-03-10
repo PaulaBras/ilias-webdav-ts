@@ -19,6 +19,9 @@ function getMainPageController() {
         },
         startDownload: (courses) => {
             return ipcRenderer.invoke('mainpage:startDownload', courses);
+        },
+        downloadSize: (courses) => {
+            return ipcRenderer.invoke('mainpage:downloadSize', courses);
         }
     }
 }

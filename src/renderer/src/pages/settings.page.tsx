@@ -3,6 +3,7 @@ import { Button, Col, Form, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BiSave } from 'react-icons/bi';
 import { FaRegFolderOpen } from 'react-icons/fa';
+import { alert } from '../middleware/alert.middleware';
 
 function SettingsPage() {
     const [settings, setSettings] = useState({
@@ -38,11 +39,13 @@ function SettingsPage() {
     function handleSubmit(e: React.FormEvent) {
         const urlPattern = /^(http|https):\/\/[^ "]+$/;
         if (!urlPattern.test(settings.url)) {
-            alert('Please enter a valid URL.');
-            // return;
+            alert.error('Please enter a valid URL.');
+            return;
         }
 
-        window.api.settings.setAppSettings(settings);
+        window.api.settings.setAppSettings(settings).then(() => {
+            alert.success('Settings saved.');
+        });
         e.preventDefault();
     }
 
@@ -80,7 +83,7 @@ function SettingsPage() {
 
                             <Row>
                                 <Col>
-                                    <Button type="button" onClick={openDialog}>
+                                    <Button type="button" variant="secondary" onClick={openDialog}>
                                         <FaRegFolderOpen /> Select Directory
                                     </Button>
                                 </Col>

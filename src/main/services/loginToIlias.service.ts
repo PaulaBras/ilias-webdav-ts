@@ -85,7 +85,7 @@ async function login(): Promise<string> {
             const existingCourse = existingCoursesMap.get(course.refId);
             if (existingCourse !== undefined) {
                 // If course already exists, use the existing entry
-                console.log('Course already exists:', existingCourse.name); // debug
+                // console.log('Course already exists:', existingCourse.name); // debug
                 return existingCourse;
             } else {
                 // Otherwise, use the new entry

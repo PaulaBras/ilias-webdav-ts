@@ -1,8 +1,11 @@
-import { ipcMain } from "electron";
-import { getCoursesList, setCoursesList, setDownloadOption } from "../../services/courses.service";
-import { login } from "../../services/loginToIlias.service";
-import { CourseList } from "../../../shared/types/courseList";
-import { checkFolderContents } from "../../services/fileOperation.service";
+import { ipcMain } from 'electron';
+import { getCoursesList, setCoursesList, setDownloadOption } from '../../services/courses.service';
+import { login } from '../../services/loginToIlias.service';
+import { CourseList } from '../../../shared/types/courseList';
+import { checkFolderContents } from '../../services/fileOperation.service';
+import { calculateWebDAVSize, createWebDAV, donwloadWebDAV, recursivelyGetAllItemsInWebDAVDirectory } from '../../services/webdav.service';
+import { getAppSettings } from '../../services/config.service';
+import { DownloadSize } from '../../../shared/types/downloadSize';
 
 function setupIpcListener() {
     ipcMain.handle('mainpage:getCourses', () => {
@@ -26,7 +29,37 @@ function setupIpcListener() {
     });
 
     ipcMain.handle('mainpage:startDownload', (_event, courses: CourseList[]) => {
-        console.log(courses);
+        const appSettings = getAppSettings();
+        courses.forEach((course) => {
+            if (appSettings.webdavId !== null) {
+                let safeName = course.name.replace(/[\\/:*?"<>|]/g, '_');
+                createWebDAV(appSettings.username, appSettings.password, appSettings.url, course.refId, appSettings.webdavId).then((client) => {
+                    if (appSettings.webdavId !== null) {
+                        donwloadWebDAV(safeName, client, appSettings.url, course.refId, course.download, appSettings.rootFolder, appSettings.webdavId);
+                    }
+                });
+            }
+        });
+    });
+
+    ipcMain.handle('mainpage:downloadSize', async (_event, courses: CourseList[]) => {
+        const appSettings = getAppSettings();
+        let sizes: DownloadSize[] = [];
+    
+        const promises = courses.map(async (course) => {
+            if (appSettings.webdavId !== null) {
+                const client = await createWebDAV(appSettings.username, appSettings.password, appSettings.url, course.refId, appSettings.webdavId);
+                if (appSettings.webdavId !== null) {
+                    const data = await recursivelyGetAllItemsInWebDAVDirectory(client);
+                    let size = calculateWebDAVSize(data);
+                    sizes.push({ refId: course.refId, size: size });
+                }
+            }
+        });
+    
+        await Promise.all(promises);
+    
+        return sizes;
     });
 }
 
