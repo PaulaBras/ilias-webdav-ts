@@ -1,57 +1,17 @@
 import { useState, useEffect } from 'react';
-import { Button, ButtonGroup, Form, Table, ProgressBar } from 'react-bootstrap';
+import { Button, ButtonGroup, Table } from 'react-bootstrap';
 import { CourseList } from 'src/shared/types/courseList';
-import { downloadCourses, getCoursesList, handleCheckboxChange } from '../services/dashboard.service';
+import { downloadCourses, getCoursesList } from '../services/dashboard.service';
 import { getAppSettings } from '../services/settings.service';
 import { BiDownload } from 'react-icons/bi';
 import { TbReload } from 'react-icons/tb';
-import { MdOpenInNew } from 'react-icons/md';
 import { AppSettings } from 'src/shared/types/appSettings';
 import { checkSettings } from '@renderer/services/errorHandleling.service';
 import { ProgressStatus } from 'src/shared/types/progress';
 import { DownloadSize } from 'src/shared/types/downloadSize';
+import { CourseTableRow } from '@renderer/services/dashboardTable.service';
 
 type ProgressStatusMap = { [key: string]: ProgressStatus };
-interface ICourseTableRowProps {
-    course: CourseList;
-    status: ProgressStatus | undefined;
-    downloadSize: DownloadSize[];
-    setCourses: React.Dispatch<React.SetStateAction<CourseList[]>>;
-}
-
-function CourseTableRow({ course, status, downloadSize, setCourses }: ICourseTableRowProps) {
-        const downloadSizeItem = downloadSize.find(item => item.refId === course.refId);
-        const sizeInBytes = downloadSizeItem ? downloadSizeItem.size : 0;
-    
-    return (
-        <tr>
-            <td>
-                {course.name} <MdOpenInNew />
-            </td>
-            <td>
-                <Form.Check type="switch" checked={course.download} onChange={(e) => handleCheckboxChange(course.refId, e.target.checked, setCourses)} />
-                {sizeInBytes > 0 ? `(${(sizeInBytes / 1024 / 1024).toFixed(2)} MB)` : ''}
-            </td>
-            <td style={{ minWidth: '150px' }}>
-                <ProgressBar
-                    {...(status?.done
-                        ? {
-                              now: 100,
-                              label: ''
-                          }
-                        : {
-                              animated: true,
-                              striped: true
-                          })}
-                    variant="success"
-                    id={course.refId}
-                    now={status?.percentage ?? 0}
-                    label={typeof status?.fileCount == 'undefined' || status.fileCount == -1 ? '' : `${status?.fileIndex} / ${status?.fileCount}`}
-                />
-            </td>
-        </tr>
-    );
-}
 
 function Dashboard() {
     const [courses, setCourses] = useState<CourseList[]>([]);
@@ -116,7 +76,7 @@ function Dashboard() {
                 </thead>
                 <tbody>
                     {courses.map((course) => (
-                        <CourseTableRow key={course.refId} course={course} status={downloadStates[course.refId]} downloadSize={downloadSize} setCourses={setCourses} />
+                        <CourseTableRow key={course.refId} course={course} status={downloadStates[course.refId]} downloadSize={downloadSize} appSettings={appSettings} setCourses={setCourses} />
                     ))}
                 </tbody>
             </Table>

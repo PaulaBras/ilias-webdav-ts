@@ -6,6 +6,8 @@ import { checkFolderContents } from '../../services/fileOperation.service';
 import { calculateWebDAVSize, createWebDAV, donwloadWebDAV, recursivelyGetAllItemsInWebDAVDirectory } from '../../services/webdav.service';
 import { getAppSettings } from '../../services/config.service';
 import { DownloadSize } from '../../../shared/types/downloadSize';
+import { getFileList, setFileList } from '../../services/fileList.service';
+import { FileStat } from 'webdav';
 
 function setupIpcListener() {
     ipcMain.handle('mainpage:getCourses', () => {
@@ -14,6 +16,14 @@ function setupIpcListener() {
 
     ipcMain.handle('mainpage:setCourses', (_event, courses: CourseList[]) => {
         return setCoursesList(courses);
+    });
+
+    ipcMain.handle('mainpage:getFileList', () => {
+        return getFileList();
+    });
+
+    ipcMain.handle('mainpage:setFileList', (_event, fileList: FileStat[]) => {
+        return setFileList(fileList);
     });
 
     ipcMain.handle('mainpage:login', () => {
@@ -30,6 +40,7 @@ function setupIpcListener() {
 
     ipcMain.handle('mainpage:startDownload', (_event, courses: CourseList[]) => {
         const appSettings = getAppSettings();
+        if (appSettings?.webdavId === null) return;
         courses.forEach((course) => {
             if (appSettings.webdavId !== null) {
                 let safeName = course.name.replace(/[\\/:*?"<>|]/g, '_');
@@ -44,6 +55,7 @@ function setupIpcListener() {
 
     ipcMain.handle('mainpage:downloadSize', async (_event, courses: CourseList[]) => {
         const appSettings = getAppSettings();
+        if (appSettings?.webdavId === null) return;
         let sizes: DownloadSize[] = [];
     
         const promises = courses.map(async (course) => {

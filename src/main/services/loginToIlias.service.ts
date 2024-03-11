@@ -77,18 +77,15 @@ async function login(): Promise<string> {
     // Get existing courses list
     const existingCoursesList = getCoursesList();
 
-    if (existingCoursesList) {
+    if (existingCoursesList !== null) {
         // Create a map for quick lookup
         const existingCoursesMap = new Map(existingCoursesList.map((course) => [course.refId, course]));
         // Update courses array
         coursesArray = coursesArray.map((course) => {
             const existingCourse = existingCoursesMap.get(course.refId);
             if (existingCourse !== undefined) {
-                // If course already exists, use the existing entry
-                // console.log('Course already exists:', existingCourse.name); // debug
                 return existingCourse;
             } else {
-                // Otherwise, use the new entry
                 console.log('New course:', course); // debug
                 return course;
             }

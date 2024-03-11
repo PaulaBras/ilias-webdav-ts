@@ -4,6 +4,7 @@ import * as posixPath from 'path/posix';
 
 import type { WebDAVClient, FileStat } from 'webdav';
 import { appWindow } from '..';
+import { getFileList, setFileList } from './fileList.service';
 
 let webdav: typeof import('webdav');
 
@@ -25,6 +26,7 @@ async function downloadDirectory(client: WebDAVClient, remotePath: string, local
     );
 
     const directoryItems = await recursivelyGetAllItemsInWebDAVDirectory(client, remotePath);
+    const oldDirectoryItems = await getFileList();
     const sizeFull = calculateWebDAVSize(directoryItems);
 
     const status = {
@@ -58,6 +60,20 @@ async function downloadDirectory(client: WebDAVClient, remotePath: string, local
 
         sendStatus();
 
+        if (oldDirectoryItems.length != 0) {
+            console.log(oldDirectoryItems)
+            console.log(oldDirectoryItems.forEach((oldItem) => oldItem?.lastMod));
+            // console.log(oldItemArray.find((oldItem) => oldItem.lastModified === new Date(item.lastmod).getTime()));
+            const oldItem = oldDirectoryItems.find((oldItem) => oldItem.name === item.filename);
+
+            // console.log(oldItem, oldItem?.lastModified, new Date(item.lastmod).getTime());
+            // If the item exists in the old list and is not newer, skip this iteration
+            if (oldItem && oldItem?.lastModified >= new Date(item.lastmod).getTime()) {
+                status.downloadedBytes += item.size;
+                continue;
+            }
+        }
+
         if (item.type === 'directory') {
             fs.mkdirSync(finalPath, { recursive: true });
         } else {
@@ -75,6 +91,7 @@ async function downloadDirectory(client: WebDAVClient, remotePath: string, local
 
     clearInterval(interval);
 
+    setFileList(directoryItems);
     status.done = true;
     sendStatus();
 }
@@ -119,7 +136,7 @@ async function donwloadWebDAV(courseName: string, client: WebDAVClient, url: str
 
     const coursePath = posixPath.join(localPath, courseName);
     let remotePath = `${url}/webdav.php/${webdavId}/ref_${refid}`;
-    if(!fs.existsSync(coursePath)) {
+    if (!fs.existsSync(coursePath)) {
         fs.mkdirSync(coursePath);
     }
     console.log(`Syncing ${remotePath} to ${localPath}`);
