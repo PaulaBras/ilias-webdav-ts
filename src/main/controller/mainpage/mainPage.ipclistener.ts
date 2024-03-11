@@ -18,12 +18,12 @@ function setupIpcListener() {
         return setCoursesList(courses);
     });
 
-    ipcMain.handle('mainpage:getFileList', () => {
-        return getFileList();
+    ipcMain.handle('mainpage:getFileList', (_event, refId: string) => {
+        return getFileList(refId);
     });
 
-    ipcMain.handle('mainpage:setFileList', (_event, fileList: FileStat[]) => {
-        return setFileList(fileList);
+    ipcMain.handle('mainpage:setFileList', (_event, refId: string, fileList: FileStat[]) => {
+        return setFileList(refId, fileList);
     });
 
     ipcMain.handle('mainpage:login', () => {

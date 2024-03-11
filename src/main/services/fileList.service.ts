@@ -3,12 +3,12 @@ import { FileStat } from 'webdav';
 
 const store = new Store();
 
-function getFileList(): FileList[] {
-    return store.get('fileStatus', {}) as FileList[];
+function getFileList(refId: string): FileStat[] {
+    return store.get(`fileStatus:${refId}`, {}) as FileStat[];
 }
 
-function setFileList(fileStatus: FileStat[]): void {
-    store.set('fileStatus', fileStatus);
+function setFileList(refId: string, fileStatus: FileStat[]): void {
+    store.set(`fileStatus:${refId}`, fileStatus);
 }
 
 export { getFileList, setFileList };

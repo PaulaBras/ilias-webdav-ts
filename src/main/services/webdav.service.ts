@@ -26,7 +26,7 @@ async function downloadDirectory(client: WebDAVClient, remotePath: string, local
     );
 
     const directoryItems = await recursivelyGetAllItemsInWebDAVDirectory(client, remotePath);
-    const oldDirectoryItems = await getFileList();
+    const oldDirectoryItems = await getFileList(refId);
     const sizeFull = calculateWebDAVSize(directoryItems);
 
     const status = {
@@ -60,17 +60,14 @@ async function downloadDirectory(client: WebDAVClient, remotePath: string, local
 
         sendStatus();
 
-        if (oldDirectoryItems.length != 0) {
-            console.log(oldDirectoryItems)
-            console.log(oldDirectoryItems.forEach((oldItem) => oldItem?.lastMod));
-            // console.log(oldItemArray.find((oldItem) => oldItem.lastModified === new Date(item.lastmod).getTime()));
-            const oldItem = oldDirectoryItems.find((oldItem) => oldItem.name === item.filename);
-
-            // console.log(oldItem, oldItem?.lastModified, new Date(item.lastmod).getTime());
-            // If the item exists in the old list and is not newer, skip this iteration
-            if (oldItem && oldItem?.lastModified >= new Date(item.lastmod).getTime()) {
-                status.downloadedBytes += item.size;
-                continue;
+        if (oldDirectoryItems.length !== 0) {
+            const oldItem = await oldDirectoryItems.find((oldItem) => oldItem.filename === item.filename);
+            if (oldItem && new Date(oldItem?.lastmod).getTime() >= new Date(item.lastmod).getTime()) {
+                const localFilePath = path.join(localPath, item.filename);
+                if (fs.existsSync(localFilePath)) {
+                    status.downloadedBytes += item.size;
+                    continue;
+                }
             }
         }
 
@@ -91,7 +88,8 @@ async function downloadDirectory(client: WebDAVClient, remotePath: string, local
 
     clearInterval(interval);
 
-    setFileList(directoryItems);
+    setFileList(refId, directoryItems);
+
     status.done = true;
     sendStatus();
 }
@@ -139,7 +137,6 @@ async function donwloadWebDAV(courseName: string, client: WebDAVClient, url: str
     if (!fs.existsSync(coursePath)) {
         fs.mkdirSync(coursePath);
     }
-    console.log(`Syncing ${remotePath} to ${localPath}`);
 
     await downloadDirectory(client, '/', coursePath, refid);
 }

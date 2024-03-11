@@ -8,11 +8,11 @@ function getMainPageController() {
         setCourses: (courses) => {
             return ipcRenderer.invoke('mainpage:setCourses', courses);
         },
-        getFileList: () => {
-            return ipcRenderer.invoke('mainpage:getFileStatus');
+        getFileList: (refId) => {
+            return ipcRenderer.invoke('mainpage:getFileList', refId);
         },
-        setFileList: (fileList) => {
-            return ipcRenderer.invoke('mainpage:setFileStatus', fileList);
+        setFileList: (refId, fileList) => {
+            return ipcRenderer.invoke('mainpage:getFileList', refId, fileList);
         },
         login: () => {
             return ipcRenderer.invoke('mainpage:login');
