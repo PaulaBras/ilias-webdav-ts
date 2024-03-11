@@ -127,13 +127,12 @@ async function createWebDAV(username: string, password: string, url: string, ref
     return client;
 }
 
-async function donwloadWebDAV(courseName: string, client: WebDAVClient, url: string, refid: string, download: boolean, localPath: string, webdavId: string) {
+async function donwloadWebDAV(courseName: string, client: WebDAVClient, refid: string, download: boolean, localPath: string) {
     if (!download) {
         return;
     }
 
     const coursePath = posixPath.join(localPath, courseName);
-    let remotePath = `${url}/webdav.php/${webdavId}/ref_${refid}`;
     if (!fs.existsSync(coursePath)) {
         fs.mkdirSync(coursePath);
     }

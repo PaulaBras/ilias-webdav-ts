@@ -46,7 +46,7 @@ function setupIpcListener() {
                 let safeName = course.name.replace(/[\\/:*?"<>|]/g, '_');
                 createWebDAV(appSettings.username, appSettings.password, appSettings.url, course.refId, appSettings.webdavId).then((client) => {
                     if (appSettings.webdavId !== null) {
-                        donwloadWebDAV(safeName, client, appSettings.url, course.refId, course.download, appSettings.rootFolder, appSettings.webdavId);
+                        donwloadWebDAV(safeName, client, course.refId, course.download, appSettings.rootFolder);
                     }
                 });
             }
