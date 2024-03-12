@@ -69,10 +69,18 @@ function SettingsPage() {
                             <Form.Control type="url" name="url" value={settings.url} onChange={handleChange} required />
                         </Form.Group>
                     </Col>
+                </Row>
+                <Row>
                     <Col>
                         <Form.Group controlId="username">
                             <Form.Label>Username</Form.Label>
                             <Form.Control type="text" name="username" value={settings.username} onChange={handleChange} required />
+                        </Form.Group>
+                    </Col>
+                    <Col>
+                        <Form.Group controlId="password">
+                            <Form.Label>Password</Form.Label>
+                            <Form.Control type="password" name="password" value={settings.password} onChange={handleChange} required />
                         </Form.Group>
                     </Col>
                 </Row>
@@ -82,23 +90,13 @@ function SettingsPage() {
                             <Form.Label>Root Folder</Form.Label>
 
                             <Row>
-                                <Col>
-                                    <Button type="button" variant="secondary" onClick={openDialog}>
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <Button type="button" variant="secondary" onClick={openDialog} style={{ whiteSpace: 'nowrap', marginRight: '10px' }}>
                                         <FaRegFolderOpen /> Select Directory
                                     </Button>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col>
                                     <Form.Control type="text" name="rootFolder" readOnly value={settings.rootFolder} onChange={handleChange} required />
-                                </Col>
+                                </div>
                             </Row>
-                        </Form.Group>
-                    </Col>
-                    <Col>
-                        <Form.Group controlId="password">
-                            <Form.Label>Password</Form.Label>
-                            <Form.Control type="password" name="password" value={settings.password} onChange={handleChange} required />
                         </Form.Group>
                     </Col>
                 </Row>
