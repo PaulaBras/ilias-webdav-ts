@@ -18,14 +18,12 @@ function handleCheckboxChange(refId: string, checked: boolean, setCourses: React
     });
 }
 
-function getCoursesList(setCourses: React.Dispatch<React.SetStateAction<CourseList[]>>, setDownloadText: React.Dispatch<React.SetStateAction<string>>, setDownloadSize: React.Dispatch<React.SetStateAction<DownloadSize[]>>): void {
+function getCoursesList(setCourses: React.Dispatch<React.SetStateAction<CourseList[]>>, setDownloadText: React.Dispatch<React.SetStateAction<string>>): void {
     window.api.mainPage.login().then((data) => {
         if (data === 'Success') {
             window.api.mainPage.getCourses().then((data) => {
                 setCourses(data);
-                window.api.mainPage.downloadSize(data).then((data) => {
-                    setDownloadSize(data);
-                });
+                window.api.mainPage.downloadSize(data);
             });
             window.api.settings.getAppSettings().then((appSettings) => {
                 window.api.mainPage.checkFolderContents(appSettings.rootFolder).then((data) => {
@@ -41,9 +39,7 @@ function getCoursesList(setCourses: React.Dispatch<React.SetStateAction<CourseLi
 }
 
 function downloadCourses(courses: CourseList[]) {
-    window.api.mainPage.startDownload(courses).then((data) => {
-        // console.log(data);
-    });
+    window.api.mainPage.startDownload(courses);
 }
 
 export { handleCheckboxChange, getCoursesList, downloadCourses };

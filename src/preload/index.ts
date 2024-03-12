@@ -10,7 +10,9 @@ export const api = {
 
     callbacks: {
         onProgress: ipcRenderer.on.bind(ipcRenderer, 'webdav:progress'),
-        offProgress: ipcRenderer.off.bind(ipcRenderer, 'webdav:progress')
+        offProgress: ipcRenderer.off.bind(ipcRenderer, 'webdav:progress'),
+        onDownloadSize: ipcRenderer.on.bind(ipcRenderer, 'mainpage:downloadSize'),
+        offDownloadSize: ipcRenderer.off.bind(ipcRenderer, 'mainpage:downloadSize')
     }
 };
 

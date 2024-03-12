@@ -8,6 +8,7 @@ import { getAppSettings } from '../../services/config.service';
 import { DownloadSize } from '../../../shared/types/downloadSize';
 import { getFileList, setFileList } from '../../services/fileList.service';
 import { FileStat } from 'webdav';
+import { appWindow } from '../..';
 
 function setupIpcListener() {
     ipcMain.handle('mainpage:getCourses', () => {
@@ -59,12 +60,16 @@ function setupIpcListener() {
         let sizes: DownloadSize[] = [];
     
         const promises = courses.map(async (course) => {
+            appWindow?.webContents.send('mainpage:downloadSize', {size: 0, done: false}, course.refId);
             if (appSettings.webdavId !== null) {
                 const client = await createWebDAV(appSettings.username, appSettings.password, appSettings.url, course.refId, appSettings.webdavId);
                 if (appSettings.webdavId !== null) {
                     const data = await recursivelyGetAllItemsInWebDAVDirectory(client);
                     let size = calculateWebDAVSize(data);
-                    sizes.push({ refId: course.refId, size: size });
+                    sizes.push({ refId: course.refId, size: size, done: true});
+
+                    // send the size async to the renderer
+                    appWindow?.webContents.send('mainpage:downloadSize', {size: size, done: true}, course.refId);
                 }
             }
         });

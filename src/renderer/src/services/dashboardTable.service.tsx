@@ -10,14 +10,14 @@ import { shell } from 'electron';
 interface ICourseTableRowProps {
     course: CourseList;
     status: ProgressStatus | undefined;
-    downloadSize: DownloadSize[];
+    downloadSize: DownloadSize | undefined;
     appSettings: AppSettings;
     setCourses: React.Dispatch<React.SetStateAction<CourseList[]>>;
 }
 
 function CourseTableRow({ course, status, downloadSize, appSettings, setCourses }: ICourseTableRowProps) {
-    const downloadSizeItem = downloadSize.find((item) => item.refId === course.refId);
-    const sizeInBytes = downloadSizeItem ? downloadSizeItem.size : -1;
+    // const downloadSizeItem = downloadSize.find((item) => item.refId === course.refId);
+    // const sizeInBytes = downloadSizeItem ? downloadSizeItem.size : -1;
 
     return (
         <tr>
@@ -32,12 +32,13 @@ function CourseTableRow({ course, status, downloadSize, appSettings, setCourses 
                 {course.name} <MdOpenInNew />
             </td>
             <td style={{ display: 'flex', alignItems: 'center' }}>
-                <Form.Check type="switch" checked={course.download} onChange={(e) => handleCheckboxChange(course.refId, e.target.checked, setCourses)} />
-                {sizeInBytes !== -1 ? (
+                <Form.Check type="switch" checked={course.download} id={course.refId} onChange={(e) => handleCheckboxChange(course.refId, e.target.checked, setCourses)} />
+                {downloadSize?.done ? `(${(downloadSize.size / 1024 / 1024).toFixed(2)} MB)` : <Spinner animation="border" size="sm" role="status" style={{ marginLeft: '5px' }} />}
+                {/* {sizeInBytes !== -1 ? (
                     `(${(sizeInBytes / 1024 / 1024).toFixed(2)} MB)`
                 ) : (
                     <Spinner animation="border" size="sm" role="status" style={{ marginLeft: '5px' }} />
-                )}
+                )} */}
             </td>
             <td style={{ minWidth: '150px' }}>
                 <ProgressBar

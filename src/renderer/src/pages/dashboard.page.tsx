@@ -12,26 +12,23 @@ import { DownloadSize } from 'src/shared/types/downloadSize';
 import { CourseTableRow } from '@renderer/services/dashboardTable.service';
 
 type ProgressStatusMap = { [key: string]: ProgressStatus };
+type DonwloadSizeMap = { [key: string]: DownloadSize };
 
 function Dashboard() {
     const [courses, setCourses] = useState<CourseList[]>([]);
     const [appSettings, setAppSettings] = useState<AppSettings>({} as AppSettings);
     const [downloadText, setDownloadText] = useState('Download');
-    const [downloadSize, setDownloadSize] = useState<DownloadSize[]>([]);
+    const [isPaused, setIsPaused] = useState(false);
 
+    const [downloadSize, setDownloadSize] = useState<DonwloadSizeMap>({});
     const [downloadStates, setDownloadStates] = useState<ProgressStatusMap>({});
-
-    function pauseDownload() {
-        console.log('Pause');
-    }
 
     useEffect(() => {
         getAppSettings(setAppSettings);
         checkSettings(appSettings);
-        getCoursesList(setCourses, setDownloadText, setDownloadSize);
+        getCoursesList(setCourses, setDownloadText);
 
         function progressHandler(_e, progress: ProgressStatus, refId: string) {
-            console.log({ progress, refId });
 
             setDownloadStates((oldValue) => {
                 return {
@@ -41,28 +38,38 @@ function Dashboard() {
             });
         }
 
+        function downloadSizeHandler(_e, downloadSize: DownloadSize, refId: string) {
+
+            setDownloadSize((oldValue) => {
+                return {
+                    ...oldValue,
+                    [refId]: downloadSize
+                };
+            });
+        }
+
+        window.api.callbacks.onDownloadSize(downloadSizeHandler);
         window.api.callbacks.onProgress(progressHandler);
 
         return () => {
             window.api.callbacks.offProgress(progressHandler);
+            window.api.callbacks.offDownloadSize(downloadSizeHandler);
         };
     }, []);
-
-    console.log(downloadStates);
 
     return (
         <div className="p-3">
             <h3>Dashboard</h3>
             <p>Here you can see all your courses and download them. Click on the refresh button to get the latest courses from ILIAS. If you don't see any courses you might need to check the settings page.</p>
             <ButtonGroup aria-label="Course actions">
-                <Button variant="primary" onClick={() => getCoursesList(setCourses, setDownloadText, setDownloadSize)}>
+                <Button variant="primary" onClick={() => getCoursesList(setCourses, setDownloadText)}>
                     <TbReload /> Refresh Courses
                 </Button>
                 <Button variant="success" onClick={() => downloadCourses(courses)}>
                     <BiDownload /> {downloadText}
                 </Button>
-                <Button variant="warning" onClick={pauseDownload} disabled>
-                    Pause
+                <Button variant="warning" onClick={() => setIsPaused(!isPaused)} disabled>
+                {isPaused ? 'Resume' : 'Pause'}
                 </Button>
             </ButtonGroup>
             <hr />
@@ -76,7 +83,7 @@ function Dashboard() {
                 </thead>
                 <tbody>
                     {courses.map((course) => (
-                        <CourseTableRow key={course.refId} course={course} status={downloadStates[course.refId]} downloadSize={downloadSize} appSettings={appSettings} setCourses={setCourses} />
+                        <CourseTableRow key={course.refId} course={course} status={downloadStates[course.refId]} downloadSize={downloadSize[course.refId]} appSettings={appSettings} setCourses={setCourses} />
                     ))}
                 </tbody>
             </Table>

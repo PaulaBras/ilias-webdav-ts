@@ -1,4 +1,4 @@
 export interface DownloadSize {
-    refId: string;
     size: number;
+    done: boolean;
 }
