@@ -66,7 +66,7 @@ function setupIpcListener() {
                 if (appSettings.webdavId !== null) {
                     const data = await recursivelyGetAllItemsInWebDAVDirectory(client);
                     let size = calculateWebDAVSize(data);
-                    sizes.push({ refId: course.refId, size: size, done: true});
+                    sizes.push({ size: size, done: true});
 
                     // send the size async to the renderer
                     appWindow?.webContents.send('mainpage:downloadSize', {size: size, done: true}, course.refId);
