@@ -60,7 +60,7 @@ async function downloadDirectory(client: WebDAVClient, remotePath: string, local
 
         sendStatus();
 
-        if (oldDirectoryItems.length !== 0) {
+        if (oldDirectoryItems && Object.keys(oldDirectoryItems).length !== 0) {
             const oldItem = await oldDirectoryItems.find((oldItem) => oldItem.filename === item.filename);
             if (oldItem && new Date(oldItem?.lastmod).getTime() >= new Date(item.lastmod).getTime()) {
                 const localFilePath = path.join(localPath, item.filename);

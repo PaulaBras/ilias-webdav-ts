@@ -4,4 +4,5 @@ export interface AppSettings {
     password: string;
     rootFolder: string;
     webdavId: string | null;
+    timeinterval: number;
 }

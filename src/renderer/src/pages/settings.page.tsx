@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Button, Col, Form, Row } from 'react-bootstrap';
+import { Button, ButtonGroup, Col, Form, Row } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BiSave } from 'react-icons/bi';
 import { FaRegFolderOpen } from 'react-icons/fa';
@@ -10,8 +10,11 @@ function SettingsPage() {
         url: '',
         username: '',
         password: '',
-        rootFolder: ''
+        rootFolder: '',
+        timeinterval: 30
     });
+
+    const [selectedInterval, setSelectedInterval] = useState(30); // default is 30 mins
 
     useEffect(() => {
         window.api.settings.getAppSettings().then((appSettings) => {
@@ -34,6 +37,14 @@ function SettingsPage() {
             ...settings,
             [e.target.name]: e.target.value
         });
+    };
+
+    const handleIntervalChange = (newInterval) => {
+        setSelectedInterval(newInterval);
+        setSettings(prevSettings => ({
+            ...prevSettings,
+            timeinterval: newInterval
+        }));
     };
 
     function handleSubmit(e: React.FormEvent) {
@@ -96,6 +107,35 @@ function SettingsPage() {
                                     </Button>
                                     <Form.Control type="text" name="rootFolder" readOnly value={settings.rootFolder} onChange={handleChange} required />
                                 </div>
+                            </Row>
+                        </Form.Group>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <Form.Group controlId="interval">
+                            <Form.Label>Sync Interval</Form.Label>
+                            <Row>
+                                <ButtonGroup>
+                                    <Button variant={selectedInterval === 1 ? 'info' : 'secondary'} onClick={() => handleIntervalChange(1)}>
+                                        1 min
+                                    </Button>
+                                    <Button variant={selectedInterval === 3 ? 'info' : 'secondary'} onClick={() => handleIntervalChange(3)}>
+                                        3 mins
+                                    </Button>
+                                    <Button variant={selectedInterval === 5 ? 'info' : 'secondary'} onClick={() => handleIntervalChange(5)}>
+                                        5 mins
+                                    </Button>
+                                    <Button variant={selectedInterval === 30 ? 'info' : 'secondary'} onClick={() => handleIntervalChange(30)}>
+                                        30 mins
+                                    </Button>
+                                    <Button variant={selectedInterval === 60 ? 'info' : 'secondary'} onClick={() => handleIntervalChange(60)}>
+                                        1 hour
+                                    </Button>
+                                    <Button variant={selectedInterval === 240 ? 'info' : 'secondary'} onClick={() => handleIntervalChange(240)}>
+                                        4 hours
+                                    </Button>
+                                </ButtonGroup>
                             </Row>
                         </Form.Group>
                     </Col>
