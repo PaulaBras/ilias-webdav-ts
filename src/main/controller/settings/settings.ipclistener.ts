@@ -12,7 +12,7 @@ function setupIpcListener() {
         return setAppSettings(settings);
     });
 
-    ipcMain.handle('settings:openDialog', async (event) => {
+    ipcMain.handle('settings:openDialog', async () => {
         const result = await dialog.showOpenDialog({
             properties: ['openDirectory']
         });

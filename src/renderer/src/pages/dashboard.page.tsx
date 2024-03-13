@@ -111,7 +111,7 @@ function Dashboard() {
                             </td>
                         </tr>
                     ) : (
-                        courses.map((course) => <CourseTableRow key={course.refId} course={course} status={downloadStates[course.refId]} downloadSize={downloadSize[course.refId]} appSettings={appSettings} setCourses={setCourses} />)
+                        courses.map((course) => <CourseTableRow key={course.refId} course={course} status={downloadStates[course.refId]} downloadSize={downloadSize[course.refId]} setCourses={setCourses} />)
                     )}
                 </tbody>
             </Table>

@@ -1,4 +1,3 @@
-import { App } from "electron";
 import { AppSettings } from "src/shared/types/appSettings";
 
 function getAppSettings(): Promise<AppSettings> {

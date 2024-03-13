@@ -4,18 +4,15 @@ import { handleCheckboxChange } from '../services/dashboard.service';
 import { MdOpenInNew } from 'react-icons/md';
 import { ProgressStatus } from 'src/shared/types/progress';
 import { DownloadSize } from 'src/shared/types/downloadSize';
-import { AppSettings } from 'src/shared/types/appSettings';
-import { shell } from 'electron';
 
 interface ICourseTableRowProps {
     course: CourseList;
     status: ProgressStatus | undefined;
     downloadSize: DownloadSize | undefined;
-    appSettings: AppSettings;
     setCourses: React.Dispatch<React.SetStateAction<CourseList[]>>;
 }
 
-function CourseTableRow({ course, status, downloadSize, appSettings, setCourses }: ICourseTableRowProps) {
+function CourseTableRow({ course, status, downloadSize, setCourses }: ICourseTableRowProps) {
 
     return (
         <tr>

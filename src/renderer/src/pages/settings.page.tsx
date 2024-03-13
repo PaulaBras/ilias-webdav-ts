@@ -24,7 +24,7 @@ function SettingsPage() {
         });
     }, []);
 
-    const openDialog = (e) => {
+    const openDialog = () => {
         window.api.settings.openDialog().then((filePaths) => {
             setSettings((prevSettings) => ({
                 ...prevSettings,
@@ -152,7 +152,7 @@ function SettingsPage() {
                     <Col>
                         <Form.Group controlId="automaticSync">
                             <Form.Label>Automatic Sync Option</Form.Label>
-                            <Form.Check type="switch" label="Automatic Download" name="automaticSync" checked={settings.automaticDownload} onChange={(e) => handleAutomaticSyncChange()} />
+                            <Form.Check type="switch" label="Automatic Download" name="automaticSync" checked={settings.automaticDownload} onChange={() => handleAutomaticSyncChange()} />
                         </Form.Group>
                     </Col>
                 </Row>

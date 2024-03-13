@@ -1,4 +1,3 @@
-import { app } from "electron";
 import { AppSettings } from "src/shared/types/appSettings";
 
 function handleAutomaticService(isPaused: boolean, setIsPaused: React.Dispatch<React.SetStateAction<boolean>>, appSettings: AppSettings) {
