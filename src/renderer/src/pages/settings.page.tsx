@@ -19,6 +19,7 @@ function SettingsPage() {
     useEffect(() => {
         window.api.settings.getAppSettings().then((appSettings) => {
             setSettings(appSettings);
+            setSelectedInterval(appSettings.timeinterval);
         });
     }, []);
 
@@ -41,7 +42,7 @@ function SettingsPage() {
 
     const handleIntervalChange = (newInterval) => {
         setSelectedInterval(newInterval);
-        setSettings(prevSettings => ({
+        setSettings((prevSettings) => ({
             ...prevSettings,
             timeinterval: newInterval
         }));
