@@ -18,17 +18,13 @@ function startDownloadProcess() {
     const downloadAndScheduleNext = async () => {
         const courseList = await getCoursesList();
 
-        startDownload(courseList)
-            .then(() => {
-                console.log('Download completed');
-                // Schedule the next download
-                if(automaticDownload) {
-                    downloadIntervalId = setTimeout(downloadAndScheduleNext, appSettings.timeinterval * 60 * 1000);
-                }
-            })
-            .catch((error) => {
-                console.error('Download failed:', error);
-            });
+        await startDownload(courseList);
+        
+        console.log('Download startet');
+        // Schedule the next download
+        if(automaticDownload) {
+            downloadIntervalId = await setTimeout(downloadAndScheduleNext, appSettings.timeinterval * 60 * 1000);
+        }
     };
 
     // Start the first download
