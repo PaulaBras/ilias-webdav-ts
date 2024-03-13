@@ -17,7 +17,10 @@ function handleCheckboxChange(refId: string, checked: boolean, setCourses: React
     });
 }
 
-function getCoursesList(setCourses: React.Dispatch<React.SetStateAction<CourseList[]>>, setDownloadText: React.Dispatch<React.SetStateAction<string>>): void {
+function getCoursesList(setCourses: React.Dispatch<React.SetStateAction<CourseList[]>>, setDownloadText: React.Dispatch<React.SetStateAction<string>>, checkSettings: boolean): void {
+    if (!checkSettings) {
+        return;
+    }
     window.api.mainPage.login().then((data) => {
         if (data === 'Success') {
             window.api.mainPage.getCourses().then((data) => {

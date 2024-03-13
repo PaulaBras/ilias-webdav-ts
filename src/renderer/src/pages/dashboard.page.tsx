@@ -21,14 +21,18 @@ function Dashboard() {
     const [appSettings, setAppSettings] = useState<AppSettings>({} as AppSettings);
     const [downloadText, setDownloadText] = useState('Download');
     const [isPaused, setIsPaused] = useState(false);
+    const [correctSettings, setCorrectSettings] = useState<boolean>(false);
 
     const [downloadSize, setDownloadSize] = useState<DonwloadSizeMap>({});
     const [downloadStates, setDownloadStates] = useState<ProgressStatusMap>({});
 
     useEffect(() => {
         getAppSettings(setAppSettings);
-        checkSettings(appSettings);
-        getCoursesList(setCourses, setDownloadText);
+        setCorrectSettings(checkSettings(appSettings));
+        if (!correctSettings) {
+            return;
+        }
+        getCoursesList(setCourses, setDownloadText, correctSettings);
         getStatus(setIsPaused);
 
         function progressHandler(_e, progress: ProgressStatus, refId: string) {
@@ -63,7 +67,7 @@ function Dashboard() {
             <h3>Dashboard</h3>
             <p>Here you can see all your courses and download them. Click on the refresh button to get the latest courses from ILIAS. If you don't see any courses you might need to check the settings page.</p>
             <ButtonGroup aria-label="Course actions">
-                <Button variant="primary" onClick={() => getCoursesList(setCourses, setDownloadText)}>
+                <Button variant="primary" onClick={() => getCoursesList(setCourses, setDownloadText, correctSettings)}>
                     <TbReload /> Refresh Courses
                 </Button>
                 <Button variant="success" onClick={() => downloadCourses(courses)}>

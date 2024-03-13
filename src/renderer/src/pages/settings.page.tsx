@@ -25,7 +25,6 @@ function SettingsPage() {
 
     const openDialog = (e) => {
         window.api.settings.openDialog().then((filePaths) => {
-            console.log(filePaths[0]);
             setSettings((prevSettings) => ({
                 ...prevSettings,
                 rootFolder: filePaths[0]
