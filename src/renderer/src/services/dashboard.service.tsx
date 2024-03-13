@@ -1,5 +1,4 @@
 import { CourseList } from 'src/shared/types/courseList';
-import { DownloadSize } from 'src/shared/types/downloadSize';
 
 function handleCheckboxChange(refId: string, checked: boolean, setCourses: React.Dispatch<React.SetStateAction<CourseList[]>>) {
     window.api.mainPage.downloadOption(refId, checked).then(() => {

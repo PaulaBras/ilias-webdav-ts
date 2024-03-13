@@ -2,11 +2,13 @@ import { contextBridge, ipcRenderer } from 'electron';
 import { electronAPI } from '@electron-toolkit/preload';
 import settingsController from '../main/controller/settings/settings.controller';
 import mainPageController from '../main/controller/mainpage/mainPage.controller';
+import automaticController from '../main/controller/mainpage/automatic.controller';
 
 // Custom APIs for renderer
 export const api = {
     settings: settingsController.getController(),
     mainPage: mainPageController.getMainPageController(),
+    mainPageAutomatic: automaticController.getAutomaticController(),
 
     callbacks: {
         onProgress: ipcRenderer.on.bind(ipcRenderer, 'webdav:progress'),

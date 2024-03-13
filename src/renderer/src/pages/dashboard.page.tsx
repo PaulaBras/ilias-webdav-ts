@@ -10,6 +10,7 @@ import { checkSettings } from '@renderer/services/errorHandleling.service';
 import { ProgressStatus } from 'src/shared/types/progress';
 import { DownloadSize } from 'src/shared/types/downloadSize';
 import { CourseTableRow } from '@renderer/services/dashboardTable.service';
+import { getStatus, handleAutomaticService } from '@renderer/services/automatic.service';
 
 type ProgressStatusMap = { [key: string]: ProgressStatus };
 type DonwloadSizeMap = { [key: string]: DownloadSize };
@@ -27,6 +28,7 @@ function Dashboard() {
         getAppSettings(setAppSettings);
         checkSettings(appSettings);
         getCoursesList(setCourses, setDownloadText);
+        getStatus(setIsPaused);
 
         function progressHandler(_e, progress: ProgressStatus, refId: string) {
 
@@ -68,8 +70,8 @@ function Dashboard() {
                 <Button variant="success" onClick={() => downloadCourses(courses)}>
                     <BiDownload /> {downloadText}
                 </Button>
-                <Button variant="warning" onClick={() => setIsPaused(!isPaused)} disabled>
-                {isPaused ? 'Resume' : 'Pause'}
+                <Button {...isPaused ? {variant: "danger"} : {variant: "warning"}} onClick={() => handleAutomaticService(isPaused, setIsPaused)}>
+                {isPaused ? 'Stop automatic Sync ' : 'Start automatic Sync'}
                 </Button>
             </ButtonGroup>
             <hr />

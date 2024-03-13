@@ -4,6 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils';
 import icon from '../../resources/icon.png?asset';
 import settingsIpclistener from './controller/settings/settings.ipclistener';
 import mainPageIpclistener from './controller/mainpage/mainPage.ipclistener';
+import automaticIpclistener from './controller/mainpage/automatic.ipclistener';
 import 'source-map-support/register'
 
 export let appWindow: BrowserWindow | undefined = undefined;
@@ -42,6 +43,7 @@ function createWindow(): void {
 
 settingsIpclistener.setupIpcListener();
 mainPageIpclistener.setupIpcListener();
+automaticIpclistener.setupIpcListener();
 
 
 // This method will be called when Electron has finished
