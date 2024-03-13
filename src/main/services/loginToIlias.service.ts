@@ -86,7 +86,7 @@ async function login(): Promise<string> {
             if (existingCourse !== undefined) {
                 return existingCourse;
             } else {
-                console.log('New course:', course); // debug
+                // console.log('New course:', course); // debug
                 return course;
             }
         });

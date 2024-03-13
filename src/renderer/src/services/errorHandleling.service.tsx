@@ -6,10 +6,9 @@ function checkSettings(appSettings: AppSettings): boolean {
 
     if(appSettings.url === '') {
         errors.push('Please set the ILIAS URL in the settings page.');
-    } 
-    // else if (appSettings.url.slice(8).includes('/')) {
-    //     errors.push('Warning: The ILIAS URL should not contain any slashes after "https://".');
-    // }
+    } else if (appSettings.url.slice(8).includes('/')) {
+        errors.push('Warning: The ILIAS URL should not contain any slashes after "https://".');
+    }
 
     if(appSettings.username === '') {
         errors.push('Please set the username in the settings page.');

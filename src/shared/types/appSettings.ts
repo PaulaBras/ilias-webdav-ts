@@ -5,4 +5,5 @@ export interface AppSettings {
     rootFolder: string;
     webdavId: string | null;
     timeinterval: number;
+    automaticDownload: boolean;
 }

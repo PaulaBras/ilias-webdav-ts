@@ -3,29 +3,27 @@ import { getCoursesList } from './courses.service';
 import { startDownload } from './download.service';
 
 let downloadIntervalId: NodeJS.Timeout | null = null;
-let automaticDownload = false;
+let automaticDownloadIsPaused = true;
 
 function startDownloadProcess() {
     const appSettings = getAppSettings();
     if (downloadIntervalId) {
-        console.log('Download interval is already running');
         return;
     }
 
-    automaticDownload = true;
+    automaticDownloadIsPaused = false;
     
     downloadIntervalId = setInterval(() => {
-        if(!automaticDownload) {
+        if(automaticDownloadIsPaused) {
             return;
         }
-        console.log('Download started');
         const courseList = getCoursesList();
         startDownload(courseList);
     }, appSettings.timeinterval * 60 * 1000);
 }
 
 function stopDownloadProcess() {
-    automaticDownload = false;
+    automaticDownloadIsPaused = true;
 
     if (downloadIntervalId) {
         clearInterval(downloadIntervalId);
@@ -33,8 +31,12 @@ function stopDownloadProcess() {
     }
 }
 
-function getStatus(): boolean {
-    return automaticDownload;
+function setStatus(status: boolean) {
+    automaticDownloadIsPaused = status;
 }
 
-export { startDownloadProcess, stopDownloadProcess, getStatus };
+function getStatus() {
+    return automaticDownloadIsPaused;
+}
+
+export { startDownloadProcess, stopDownloadProcess, setStatus, getStatus };

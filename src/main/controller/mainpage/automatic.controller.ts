@@ -8,6 +8,9 @@ function getAutomaticController() {
         stopDownloadInterval: () => {
             return ipcRenderer.invoke('automatic:stopDownloadInterval');
         },
+        setStatus: (automaticDownload: boolean) => {
+            return ipcRenderer.invoke('automatic:setStatus', automaticDownload);
+        },
         getStatus: () => {
             return ipcRenderer.invoke('automatic:getStatus');
         }

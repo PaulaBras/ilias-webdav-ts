@@ -11,7 +11,7 @@ import { checkSettings } from '@renderer/services/errorHandleling.service';
 import { ProgressStatus } from 'src/shared/types/progress';
 import { DownloadSize } from 'src/shared/types/downloadSize';
 import { CourseTableRow } from '@renderer/services/dashboardTable.service';
-import { getStatus, handleAutomaticService } from '@renderer/services/automatic.service';
+import { handleAutomaticService } from '@renderer/services/automatic.service';
 
 type ProgressStatusMap = { [key: string]: ProgressStatus };
 type DonwloadSizeMap = { [key: string]: DownloadSize };
@@ -20,21 +20,32 @@ function Dashboard() {
     const [courses, setCourses] = useState<CourseList[]>([]);
     const [appSettings, setAppSettings] = useState<AppSettings>({} as AppSettings);
     const [downloadText, setDownloadText] = useState('Download');
-    const [isPaused, setIsPaused] = useState(false);
+    const [isPaused, setIsPaused] = useState(true);
     const [correctSettings, setCorrectSettings] = useState<boolean>(false);
 
     const [downloadSize, setDownloadSize] = useState<DonwloadSizeMap>({});
     const [downloadStates, setDownloadStates] = useState<ProgressStatusMap>({});
 
     useEffect(() => {
-        getAppSettings(setAppSettings);
-        setCorrectSettings(checkSettings(appSettings));
+        getAppSettings().then((loadedSettings) => {
+            setAppSettings(loadedSettings);
+            setCorrectSettings(checkSettings(loadedSettings));
+        });
+    }, []);
+
+    useEffect(() => {
         if (!correctSettings) {
             return;
         }
-        getCoursesList(setCourses, setDownloadText, correctSettings);
-        getStatus(setIsPaused);
 
+        getCoursesList(setCourses, setDownloadText, correctSettings);
+        window.api.mainPageAutomatic.setStatus(appSettings.automaticDownload);
+        setIsPaused(!appSettings.automaticDownload);
+        if (appSettings.automaticDownload === true) {
+            window.api.mainPageAutomatic.startDownloadInterval();
+        } else {
+            window.api.mainPageAutomatic.stopDownloadInterval();
+        }
         function progressHandler(_e, progress: ProgressStatus, refId: string) {
             setDownloadStates((oldValue) => {
                 return {
@@ -60,7 +71,7 @@ function Dashboard() {
             window.api.callbacks.offProgress(progressHandler);
             window.api.callbacks.offDownloadSize(downloadSizeHandler);
         };
-    }, []);
+    }, [correctSettings]);
 
     return (
         <div className="p-3">
@@ -73,8 +84,8 @@ function Dashboard() {
                 <Button variant="success" onClick={() => downloadCourses(courses)}>
                     <BiDownload /> {downloadText}
                 </Button>
-                <Button {...(isPaused ? { variant: 'danger' } : { variant: 'warning' })} onClick={() => handleAutomaticService(isPaused, setIsPaused)}>
-                    <MdSync /> {isPaused ? 'Stop automatic Sync ' : 'Start automatic Sync'}
+                <Button {...(isPaused ? { variant: 'warning' } : { variant: 'danger' })} onClick={() => handleAutomaticService(isPaused, setIsPaused, appSettings)}>
+                    <MdSync /> {isPaused ? 'Start automatic Sync' : 'Stop automatic Sync'}
                 </Button>
             </ButtonGroup>
             <hr />
@@ -90,13 +101,13 @@ function Dashboard() {
                     {courses.length === 0 ? (
                         <tr>
                             <td>
-                                <Spinner animation="border" role="status" variant="primary" size='sm' style={{ marginLeft: '20px' }} />
+                                <Spinner animation="border" role="status" variant="primary" size="sm" />
                             </td>
                             <td>
-                                <Spinner animation="border" role="status" variant="primary" size='sm' style={{ marginLeft: '20px' }} />
+                                <Spinner animation="border" role="status" variant="primary" size="sm" />
                             </td>
                             <td>
-                                <Spinner animation="border" role="status" variant="primary" size='sm' style={{ marginLeft: '20px' }} />
+                                <Spinner animation="border" role="status" variant="primary" size="sm" />
                             </td>
                         </tr>
                     ) : (

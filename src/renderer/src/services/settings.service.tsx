@@ -1,9 +1,8 @@
+import { App } from "electron";
 import { AppSettings } from "src/shared/types/appSettings";
 
-function getAppSettings(setCourses: React.Dispatch<React.SetStateAction<AppSettings>>) {
-    window.api.settings.getAppSettings().then((data) => {
-        setCourses(data);
-    });
+function getAppSettings(): Promise<AppSettings> {
+    return window.api.settings.getAppSettings();
 }
 
 export { getAppSettings };

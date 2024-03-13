@@ -11,7 +11,8 @@ function SettingsPage() {
         username: '',
         password: '',
         rootFolder: '',
-        timeinterval: 30
+        timeinterval: 30,
+        automaticDownload: false
     });
 
     const [selectedInterval, setSelectedInterval] = useState(30); // default is 30 mins
@@ -37,6 +38,13 @@ function SettingsPage() {
             ...settings,
             [e.target.name]: e.target.value
         });
+    };
+
+    const handleAutomaticSyncChange = () => {
+        setSettings((prevSettings) => ({
+            ...prevSettings,
+            automaticDownload: !prevSettings.automaticDownload
+        }));
     };
 
     const handleIntervalChange = (newInterval) => {
@@ -137,6 +145,14 @@ function SettingsPage() {
                                     </Button>
                                 </ButtonGroup>
                             </Row>
+                        </Form.Group>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        <Form.Group controlId="automaticSync">
+                            <Form.Label>Automatic Sync Option</Form.Label>
+                            <Form.Check type="switch" label="Automatic Download" name="automaticSync" checked={settings.automaticDownload} onChange={(e) => handleAutomaticSyncChange()} />
                         </Form.Group>
                     </Col>
                 </Row>

@@ -3,12 +3,8 @@ import { getCoursesList, setCoursesList, setDownloadOption } from '../../service
 import { login } from '../../services/loginToIlias.service';
 import { CourseList } from '../../../shared/types/courseList';
 import { checkFolderContents } from '../../services/fileOperation.service';
-import { calculateWebDAVSize, createWebDAV, donwloadWebDAV, recursivelyGetAllItemsInWebDAVDirectory } from '../../services/webdav.service';
-import { getAppSettings } from '../../services/config.service';
-import { DownloadSize } from '../../../shared/types/downloadSize';
 import { getFileList, setFileList } from '../../services/fileList.service';
 import { FileStat } from 'webdav';
-import { appWindow } from '../..';
 import { downloadSize, startDownload } from '../../services/download.service';
 
 function setupIpcListener() {
