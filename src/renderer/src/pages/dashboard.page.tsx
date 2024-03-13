@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Button, ButtonGroup, Table } from 'react-bootstrap';
+import { Button, ButtonGroup, Spinner, Table } from 'react-bootstrap';
 import { CourseList } from 'src/shared/types/courseList';
 import { downloadCourses, getCoursesList } from '../services/dashboard.service';
 import { getAppSettings } from '../services/settings.service';
 import { BiDownload } from 'react-icons/bi';
 import { TbReload } from 'react-icons/tb';
+import { MdSync } from 'react-icons/md';
 import { AppSettings } from 'src/shared/types/appSettings';
 import { checkSettings } from '@renderer/services/errorHandleling.service';
 import { ProgressStatus } from 'src/shared/types/progress';
@@ -31,7 +32,6 @@ function Dashboard() {
         getStatus(setIsPaused);
 
         function progressHandler(_e, progress: ProgressStatus, refId: string) {
-
             setDownloadStates((oldValue) => {
                 return {
                     ...oldValue,
@@ -41,7 +41,6 @@ function Dashboard() {
         }
 
         function downloadSizeHandler(_e, downloadSize: DownloadSize, refId: string) {
-
             setDownloadSize((oldValue) => {
                 return {
                     ...oldValue,
@@ -70,8 +69,8 @@ function Dashboard() {
                 <Button variant="success" onClick={() => downloadCourses(courses)}>
                     <BiDownload /> {downloadText}
                 </Button>
-                <Button {...isPaused ? {variant: "danger"} : {variant: "warning"}} onClick={() => handleAutomaticService(isPaused, setIsPaused)}>
-                {isPaused ? 'Stop automatic Sync ' : 'Start automatic Sync'}
+                <Button {...(isPaused ? { variant: 'danger' } : { variant: 'warning' })} onClick={() => handleAutomaticService(isPaused, setIsPaused)}>
+                    <MdSync /> {isPaused ? 'Stop automatic Sync ' : 'Start automatic Sync'}
                 </Button>
             </ButtonGroup>
             <hr />
@@ -84,9 +83,21 @@ function Dashboard() {
                     </tr>
                 </thead>
                 <tbody>
-                    {courses.map((course) => (
-                        <CourseTableRow key={course.refId} course={course} status={downloadStates[course.refId]} downloadSize={downloadSize[course.refId]} appSettings={appSettings} setCourses={setCourses} />
-                    ))}
+                    {courses.length === 0 ? (
+                        <tr>
+                            <td>
+                                <Spinner animation="border" role="status" variant="primary" size='sm' style={{ marginLeft: '20px' }} />
+                            </td>
+                            <td>
+                                <Spinner animation="border" role="status" variant="primary" size='sm' style={{ marginLeft: '20px' }} />
+                            </td>
+                            <td>
+                                <Spinner animation="border" role="status" variant="primary" size='sm' style={{ marginLeft: '20px' }} />
+                            </td>
+                        </tr>
+                    ) : (
+                        courses.map((course) => <CourseTableRow key={course.refId} course={course} status={downloadStates[course.refId]} downloadSize={downloadSize[course.refId]} appSettings={appSettings} setCourses={setCourses} />)
+                    )}
                 </tbody>
             </Table>
         </div>

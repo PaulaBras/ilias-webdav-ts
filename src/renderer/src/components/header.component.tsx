@@ -2,7 +2,7 @@ import { Navbar, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { IoMdSettings } from 'react-icons/io';
-import { MdSpaceDashboard } from 'react-icons/md';
+import { MdHelp, MdSpaceDashboard } from 'react-icons/md';
 
 function Header() {
     return (
@@ -17,7 +17,7 @@ function Header() {
                         <IoMdSettings /> Settings
                     </Navbar.Brand>
                     <Navbar.Brand as={Link} to="/about">
-                        About
+                        <MdHelp /> About
                     </Navbar.Brand>
                 </Container>
             </Navbar>

@@ -13,22 +13,15 @@ function startDownloadProcess() {
     }
 
     automaticDownload = true;
-
-    // Call the download function once every interval
-    const downloadAndScheduleNext = async () => {
-        const courseList = await getCoursesList();
-
-        await startDownload(courseList);
-        
-        console.log('Download startet');
-        // Schedule the next download
-        if(automaticDownload) {
-            downloadIntervalId = await setTimeout(downloadAndScheduleNext, appSettings.timeinterval * 60 * 1000);
+    
+    downloadIntervalId = setInterval(() => {
+        if(!automaticDownload) {
+            return;
         }
-    };
-
-    // Start the first download
-    downloadAndScheduleNext();
+        console.log('Download started');
+        const courseList = getCoursesList();
+        startDownload(courseList);
+    }, appSettings.timeinterval * 60 * 1000);
 }
 
 function stopDownloadProcess() {
