@@ -77,7 +77,7 @@ async function login(): Promise<string> {
     // Get existing courses list
     const existingCoursesList = getCoursesList();
 
-    if (existingCoursesList !== null) {
+    if (existingCoursesList !== null && Array.isArray(existingCoursesList)) {
         // Create a map for quick lookup
         const existingCoursesMap = new Map(existingCoursesList.map((course) => [course.refId, course]));
         // Update courses array
@@ -90,6 +90,8 @@ async function login(): Promise<string> {
                 return course;
             }
         });
+    } else {
+        return 'Error: Existing courses list is not an array';
     }
 
     setCoursesList(coursesArray);
