@@ -1,6 +1,6 @@
 {
     "name": "ilias-webdav-ts",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Ilias webdav scraper to Vorratsdatenspeicherung :P",
     "main": "./out/main/index.js",
     "author": "paul@pabr.de",
