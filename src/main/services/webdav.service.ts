@@ -8,7 +8,7 @@ import { getFileList, setFileList } from './fileList.service';
 
 let webdav: typeof import('webdav');
 
-import('webdav').then((module) => {
+import('webdav/dist/node/index.js').then((module) => {
     webdav = module;
 });
 

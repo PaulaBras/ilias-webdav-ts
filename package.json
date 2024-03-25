@@ -1,5 +1,5 @@
 {
-    "name": "ilias-webdav-ts",
+    "name": "Ilias-Scraper",
     "version": "1.0.1",
     "description": "Ilias webdav scraper to Vorratsdatenspeicherung :P",
     "main": "./out/main/index.js",
