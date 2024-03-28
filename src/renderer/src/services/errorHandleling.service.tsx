@@ -4,6 +4,11 @@ import { alert } from '../middleware/alert.middleware';
 function checkSettings(appSettings: AppSettings): boolean {
     let errors: string[] = [];
 
+    if(!appSettings) {
+        errors.push('Please set the settings in the settings page.');
+        return false;
+    }
+
     if(appSettings.url === '') {
         errors.push('Please set the ILIAS URL in the settings page.');
     } else if (appSettings.url.slice(8).includes('/')) {
