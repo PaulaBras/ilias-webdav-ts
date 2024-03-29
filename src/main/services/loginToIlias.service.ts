@@ -8,10 +8,22 @@ async function login(): Promise<string> {
     let coursesArray: CourseList[] = [];
     let setCookieHeader;
     let phpSessId;
+    let cmdNode;
 
     if (!url || !username || !password || !webdavId) {
         return 'Please enter all required fields in the settings.';
     }
+
+    await axios.get(url + '/login.php').then((response) => {
+        const regex = /action="ilias\.php\?lang=de&cmd=post&cmdClass=ilstartupgui&cmdNode=(\w+)&baseClass=ilStartUpGUI&rtoken="/;
+
+        response.data.split('\n').forEach((line: string) => {
+            const match = line.match(regex);
+            if (match) {
+                cmdNode = match[1];
+            }
+        });
+    });
 
     const loginData = {
         username: username,
@@ -21,7 +33,7 @@ async function login(): Promise<string> {
 
     // Login
     try {
-        await axios.post(url + `/ilias.php?lang=de&client_id=${webdavId}&cmd=post&cmdClass=ilstartupgui&cmdNode=10l&baseClass=ilStartUpGUI&rtoken=`, loginData, {
+        await axios.post(url + `/ilias.php?lang=de&client_id=${webdavId}&cmd=post&cmdClass=ilstartupgui&cmdNode=${cmdNode}&baseClass=ilStartUpGUI&rtoken=`, loginData, {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
@@ -77,22 +89,18 @@ async function login(): Promise<string> {
     // Get existing courses list
     const existingCoursesList = getCoursesList();
 
-    if (existingCoursesList !== null && Array.isArray(existingCoursesList)) {
-        // Create a map for quick lookup
-        const existingCoursesMap = new Map(existingCoursesList.map((course) => [course.refId, course]));
-        // Update courses array
-        coursesArray = coursesArray.map((course) => {
-            const existingCourse = existingCoursesMap.get(course.refId);
-            if (existingCourse !== undefined) {
-                return existingCourse;
-            } else {
-                // console.log('New course:', course); // debug
-                return course;
-            }
-        });
-    } else {
-        return 'Error: Existing courses list is not an array';
-    }
+    // if (existingCoursesList !== null && Array.isArray(existingCoursesList)) {
+    // Create a map for quick lookup
+    const existingCoursesMap = new Map(existingCoursesList?.map?.((course) => [course.refId, course]) ?? []);
+    // Update courses array
+    coursesArray = coursesArray.map((course) => {
+        const existingCourse = existingCoursesMap.get(course.refId);
+        if (existingCourse !== undefined) {
+            return existingCourse;
+        } else {
+            return course;
+        }
+    });
 
     setCoursesList(coursesArray);
 

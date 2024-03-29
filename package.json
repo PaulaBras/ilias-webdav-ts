@@ -1,6 +1,6 @@
 {
     "name": "Ilias-Scraper",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Ilias webdav scraper to Vorratsdatenspeicherung :P",
     "main": "./out/main/index.js",
     "author": "paul@pabr.de",

@@ -37,7 +37,7 @@ function Dashboard() {
         if (!correctSettings) {
             return;
         }
-
+        
         getCoursesList(setCourses, setDownloadText, correctSettings);
         window.api.mainPageAutomatic.setStatus(appSettings.automaticDownload);
         setIsPaused(!appSettings.automaticDownload);
