@@ -1,6 +1,6 @@
 {
     "name": "Ilias-Scraper",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "Ilias webdav scraper to Vorratsdatenspeicherung :P",
     "main": "./out/main/index.js",
     "author": "paul@pabr.de",
@@ -40,7 +40,7 @@
         "@types/react-dom": "^18.2.7",
         "@vitejs/plugin-react": "^4.0.4",
         "axios": "^1.6.2",
-        "electron": "^25.6.0",
+        "electron": "^28.3.1",
         "electron-builder": "^24.6.3",
         "electron-store": "^8.2.0",
         "electron-vite": "^1.0.27",
