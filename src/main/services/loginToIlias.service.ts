@@ -65,8 +65,24 @@ async function login(): Promise<string> {
         }
     }
 
+    // Get Courses CmdNode to get courses
+    const response = await axios.get(url + `/ilias.php?baseClass=ilRepositoryGUI&amp;client_id=${webdavId}`, {
+        headers: {
+            Cookie: `PHPSESSID=${phpSessId}; ilClientId=${webdavId}`
+        },
+        withCredentials: true
+    });
+
+    const regex = /<a class="il-link link-bulky" href="\/ilias\.php\?cmdClass=ilmembershipoverviewgui&cmdNode=([a-zA-Z0-9]+)&baseClass=ilmembershipoverviewgui"/;
+    const match = response.data.match(regex);
+    let cmdNodeCourses = "";
+
+    if (match && match[1]) {
+        cmdNodeCourses = match[1]; 
+    }
+
     // Get courses
-    let courses = await axios.get(url + '/ilias.php?cmdClass=ilmembershipoverviewgui&cmdNode=jb&baseClass=ilmembershipoverviewgui', {
+    let courses = await axios.get(url + `/ilias.php?cmdClass=ilmembershipoverviewgui&cmdNode=${cmdNodeCourses}&baseClass=ilmembershipoverviewgui`, {
         headers: {
             Cookie: `PHPSESSID=${phpSessId}; ilClientId=${webdavId}`
         },
