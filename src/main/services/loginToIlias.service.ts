@@ -25,18 +25,30 @@ async function login(): Promise<string> {
         });
     });
 
-    const loginData = {
-        username: username,
-        password: password,
-        'cmd[doStandardAuthentication]': 'Anmelden'
-    };
+    // Create the multipart form-data with specific boundary
+    const boundary = '-----------------------------' + Math.floor(Math.random() * 1000000000000000);
+    const formData = [
+        `--${boundary}`,
+        'Content-Disposition: form-data; name="login_form/input_3/input_4"',
+        '',
+        username,
+        `--${boundary}`,
+        'Content-Disposition: form-data; name="login_form/input_3/input_5"',
+        '',
+        password,
+        `--${boundary}--`
+    ].join('\r\n');
 
     // Login
     try {
-        await axios.post(url + `/ilias.php?lang=de&client_id=${webdavId}&cmd=post&cmdClass=ilstartupgui&cmdNode=${cmdNode}&baseClass=ilStartUpGUI&rtoken=`, loginData, {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
+        const response = await axios.post(
+            url + `/ilias.php?lang=de&client_id=${webdavId}&cmd=post&cmdClass=ilstartupgui&baseClass=ilStartUpGUI&fallbackCmd=doStandardAuthentication&rtoken=`, 
+            formData,
+            {
+                headers: {
+                    'Content-Type': `multipart/form-data; boundary=${boundary}`,
+                    'Content-Length': Buffer.from(formData).length.toString()
+                },
             withCredentials: true,
             maxRedirects: 0
         });
@@ -59,9 +71,6 @@ async function login(): Promise<string> {
                 },
                 withCredentials: true
             });
-        } else {
-            // Some other error occurred
-            console.error(error);
         }
     }
 
@@ -73,7 +82,7 @@ async function login(): Promise<string> {
         withCredentials: true
     });
 
-    const regex = /<a class="il-link link-bulky" href="\/ilias\.php\?cmdClass=ilmembershipoverviewgui&cmdNode=([a-zA-Z0-9]+)&baseClass=ilmembershipoverviewgui"/;
+    const regex = /<a class="il-link link-bulky"[^>]*href="[^"]*cmdNode=([a-zA-Z0-9:]+)"/;
     const match = response.data.match(regex);
     let cmdNodeCourses = "";
 
@@ -82,26 +91,45 @@ async function login(): Promise<string> {
     }
 
     // Get courses
-    let courses = await axios.get(url + `/ilias.php?cmdClass=ilmembershipoverviewgui&cmdNode=${cmdNodeCourses}&baseClass=ilmembershipoverviewgui`, {
+    let courses = await axios.get(url + `/ilias.php?baseClass=ilmembershipoverviewgui`, {
         headers: {
             Cookie: `PHPSESSID=${phpSessId}; ilClientId=${webdavId}`
         },
         withCredentials: true
     });
-
+    
     // Parse course names and ref_ids
     let lines = courses.data.split('\n');
-    let refIdLines = lines.filter((line) => line.includes('ref_id=') && line.includes('<a'));
-
-    refIdLines.forEach((line) => {
-        let nameMatch = line.match(/<a[^>]*>([^<]+)<\/a>/);
-        let refIdMatch = line.match(/ref_id=([0-9]+)/);
-
-        if (nameMatch && refIdMatch) {
-            coursesArray.push({ name: nameMatch[1], refId: refIdMatch[1], download: true });
+    
+    // Create a map to store unique ref_ids with their course titles
+    const refIdMap = new Map();
+    
+    // First find all h4 titles
+    let currentTitle = '';
+    lines.forEach(line => {
+        const titleMatch = line.match(/<h4 class="il-item-title"><a[^>]*>([^<]+)<\/a><\/h4>/);
+        if (titleMatch) {
+            currentTitle = titleMatch[1];
+        }
+        
+        const refIdMatch = line.match(/ref_id=([0-9]+)/);
+        if (refIdMatch && currentTitle) {
+            const refId = refIdMatch[1];
+            if (!refIdMap.has(refId)) {
+                refIdMap.set(refId, currentTitle);
+            }
         }
     });
-
+    
+    // Convert refIdMap to coursesArray with sanitized names
+    refIdMap.forEach((title, refId) => {
+        coursesArray.push({ 
+            name: title, 
+            refId: refId, 
+            download: true 
+        });
+    });
+    
     // Get existing courses list
     const existingCoursesList = getCoursesList();
 
