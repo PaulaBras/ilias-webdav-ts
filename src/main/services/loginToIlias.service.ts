@@ -8,22 +8,22 @@ async function login(): Promise<string> {
     let coursesArray: CourseList[] = [];
     let setCookieHeader;
     let phpSessId;
-    let cmdNode;
+    // let cmdNode;
 
     if (!url || !username || !password || !webdavId) {
         return 'Please enter all required fields in the settings.';
     }
 
-    await axios.get(url + '/login.php').then((response) => {
-        const regex = /action="ilias\.php\?lang=de&cmd=post&cmdClass=ilstartupgui&cmdNode=(\w+)&baseClass=ilStartUpGUI&rtoken="/;
+    // await axios.get(url + '/login.php').then((response) => {
+    //     const regex = /action="ilias\.php\?lang=de&cmd=post&cmdClass=ilstartupgui&cmdNode=(\w+)&baseClass=ilStartUpGUI&rtoken="/;
 
-        response.data.split('\n').forEach((line: string) => {
-            const match = line.match(regex);
-            if (match) {
-                cmdNode = match[1];
-            }
-        });
-    });
+    //     response.data.split('\n').forEach((line: string) => {
+    //         const match = line.match(regex);
+    //         if (match) {
+    //             cmdNode = match[1];
+    //         }
+    //     });
+    // });
 
     // Create the multipart form-data with specific boundary
     const boundary = '-----------------------------' + Math.floor(Math.random() * 1000000000000000);
@@ -41,7 +41,7 @@ async function login(): Promise<string> {
 
     // Login
     try {
-        const response = await axios.post(
+        await axios.post(
             url + `/ilias.php?lang=de&client_id=${webdavId}&cmd=post&cmdClass=ilstartupgui&baseClass=ilStartUpGUI&fallbackCmd=doStandardAuthentication&rtoken=`, 
             formData,
             {
@@ -74,21 +74,21 @@ async function login(): Promise<string> {
         }
     }
 
-    // Get Courses CmdNode to get courses
-    const response = await axios.get(url + `/ilias.php?baseClass=ilRepositoryGUI&amp;client_id=${webdavId}`, {
-        headers: {
-            Cookie: `PHPSESSID=${phpSessId}; ilClientId=${webdavId}`
-        },
-        withCredentials: true
-    });
+    // // Get Courses CmdNode to get courses
+    // const response = await axios.get(url + `/ilias.php?baseClass=ilRepositoryGUI&amp;client_id=${webdavId}`, {
+    //     headers: {
+    //         Cookie: `PHPSESSID=${phpSessId}; ilClientId=${webdavId}`
+    //     },
+    //     withCredentials: true
+    // });
 
-    const regex = /<a class="il-link link-bulky"[^>]*href="[^"]*cmdNode=([a-zA-Z0-9:]+)"/;
-    const match = response.data.match(regex);
-    let cmdNodeCourses = "";
+    // const regex = /<a class="il-link link-bulky"[^>]*href="[^"]*cmdNode=([a-zA-Z0-9:]+)"/;
+    // const match = response.data.match(regex);
+    // let cmdNodeCourses = "";
 
-    if (match && match[1]) {
-        cmdNodeCourses = match[1]; 
-    }
+    // if (match && match[1]) {
+    //     cmdNodeCourses = match[1]; 
+    // }
 
     // Get courses
     let courses = await axios.get(url + `/ilias.php?baseClass=ilmembershipoverviewgui`, {
@@ -133,7 +133,6 @@ async function login(): Promise<string> {
     // Get existing courses list
     const existingCoursesList = getCoursesList();
 
-    // if (existingCoursesList !== null && Array.isArray(existingCoursesList)) {
     // Create a map for quick lookup
     const existingCoursesMap = new Map(existingCoursesList?.map?.((course) => [course.refId, course]) ?? []);
     // Update courses array
