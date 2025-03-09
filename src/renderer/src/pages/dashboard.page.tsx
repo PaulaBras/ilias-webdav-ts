@@ -77,6 +77,8 @@ function Dashboard() {
         <div className="p-3">
             <h3>Dashboard</h3>
             <p>Here you can see all your courses and download them. Click on the refresh button to get the latest courses from ILIAS. If you don't see any courses you might need to check the settings page.</p>
+            <hr />
+            <p>In Ilias Version 9.7 are Courses with the Characters '/' and ':' are invalid and cannot be downloaded.</p>
             <ButtonGroup aria-label="Course actions">
                 <Button variant="primary" onClick={() => getCoursesList(setCourses, setDownloadText, correctSettings)}>
                     <TbReload /> Refresh Courses
