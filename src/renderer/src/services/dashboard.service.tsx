@@ -30,7 +30,7 @@ function getCoursesList(setCourses: React.Dispatch<React.SetStateAction<CourseLi
                 if (data?.length > 0) {
                     window.api.mainPage.downloadSize(data);
                 }
-            }).catch(error => {
+            }).catch(_ => {
                 // Silent error handling
             });
             
@@ -41,14 +41,14 @@ function getCoursesList(setCourses: React.Dispatch<React.SetStateAction<CourseLi
                     } else {
                         setDownloadText('Download');
                     }
-                }).catch(error => {
+                }).catch(_ => {
                     // Silent error handling
                 });
-            }).catch(error => {
+            }).catch(_ => {
                 // Silent error handling
             });
         }
-    }).catch(error => {
+    }).catch(_ => {
         // Silent error handling
     });
 }

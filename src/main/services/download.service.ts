@@ -27,7 +27,7 @@ async function startDownload(courses: CourseList[]) {
             appSettings.webdavId // Now we know this is not null
         ).then((client) => {
             donwloadWebDAV(safeName, client, course.refId, course.download, appSettings.rootFolder);
-        }).catch(error => {
+        }).catch(_ => {
             // Silent error handling
         });
     });

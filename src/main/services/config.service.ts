@@ -12,7 +12,7 @@ function setAppSettings(settings: AppSettings): void {
     getWebDavID(settings).then(webdavId => {
         settings.webdavId = webdavId;
         store.set('appSettings', settings);
-    }).catch(error => {
+    }).catch(_ => {
         // Save settings even if webdavId retrieval fails
         store.set('appSettings', settings);
     });

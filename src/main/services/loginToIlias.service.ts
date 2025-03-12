@@ -190,7 +190,7 @@ async function login(): Promise<string> {
     let refIdMatchCount = 0;
     let successfulMatches = 0;
     
-    lines.forEach((line, index) => {
+    lines.forEach((line, _) => {
         const titleMatch = line.match(/<h4 class="il-item-title"><a[^>]*>([^<]+)<\/a><\/h4>/);
         if (titleMatch) {
             currentTitle = titleMatch[1];
