@@ -95,21 +95,30 @@ async function downloadDirectory(client: WebDAVClient, remotePath: string, local
 }
 
 async function recursivelyGetAllItemsInWebDAVDirectory(client: WebDAVClient, remotePath = '/') {
-    const directoryItems = (await client.getDirectoryContents(remotePath)) as FileStat[];
+    try {
+        const directoryItems = (await client.getDirectoryContents(remotePath)) as FileStat[];
 
-    for (const item of [...directoryItems]) {
-        const remoteItemPath = posixPath.join(remotePath, item.basename);
+        const allItems = [...directoryItems];
+        
+        for (const item of directoryItems) {
+            const remoteItemPath = posixPath.join(remotePath, item.basename);
 
-        if (item.type !== 'directory') {
-            continue;
+            if (item.type !== 'directory') {
+                continue;
+            }
+
+            try {
+                const items = await recursivelyGetAllItemsInWebDAVDirectory(client, remoteItemPath);
+                allItems.push(...items);
+            } catch (error) {
+                // Continue with other directories even if one fails
+            }
         }
 
-        const items = await recursivelyGetAllItemsInWebDAVDirectory(client, remoteItemPath);
-
-        directoryItems.push(...items);
+        return allItems;
+    } catch (error) {
+        throw error;
     }
-
-    return directoryItems;
 }
 
 function calculateWebDAVSize(directoryItems: FileStat[]) {
@@ -117,14 +126,27 @@ function calculateWebDAVSize(directoryItems: FileStat[]) {
 }
 
 async function createWebDAV(username: string, password: string, url: string, refid: string, webdavId: string): Promise<WebDAVClient> {
-    let remotePath = `${url}/webdav.php/${webdavId}/ref_${refid}`;
+    // Ensure URL doesn't have trailing slashes
+    const baseUrl = url.replace(/\/+$/, '');
+    let remotePath = `${baseUrl}/webdav.php/${webdavId}/ref_${refid}`;
 
-    const client = await webdav.createClient(remotePath, {
-        username: username,
-        password: password
-    });
-
-    return client;
+    try {
+        if (!webdav) {
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            if (!webdav) {
+                throw new Error('WebDAV module not loaded');
+            }
+        }
+        
+        const client = await webdav.createClient(remotePath, {
+            username: username,
+            password: password
+        });
+        
+        return client;
+    } catch (error) {
+        throw error;
+    }
 }
 
 async function donwloadWebDAV(courseName: string, client: WebDAVClient, refid: string, download: boolean, localPath: string) {

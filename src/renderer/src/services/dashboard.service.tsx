@@ -21,12 +21,19 @@ function getCoursesList(setCourses: React.Dispatch<React.SetStateAction<CourseLi
     if (!checkSettings) {
         return;
     }
+    
     window.api.mainPage.login().then((data) => {
-        if (data === 'Success') {
+        if (data === 'Success' || data === 'Success but no courses found') {
             window.api.mainPage.getCourses().then((data) => {
-                setCourses(data);
-                window.api.mainPage.downloadSize(data);
+                setCourses(data || []);
+                
+                if (data?.length > 0) {
+                    window.api.mainPage.downloadSize(data);
+                }
+            }).catch(error => {
+                // Silent error handling
             });
+            
             window.api.settings.getAppSettings().then((appSettings) => {
                 window.api.mainPage.checkFolderContents(appSettings.rootFolder).then((data) => {
                     if (data === 'files in Folder') {
@@ -34,9 +41,15 @@ function getCoursesList(setCourses: React.Dispatch<React.SetStateAction<CourseLi
                     } else {
                         setDownloadText('Download');
                     }
+                }).catch(error => {
+                    // Silent error handling
                 });
+            }).catch(error => {
+                // Silent error handling
             });
         }
+    }).catch(error => {
+        // Silent error handling
     });
 }
 
